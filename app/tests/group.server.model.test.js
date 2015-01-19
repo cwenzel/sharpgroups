@@ -30,7 +30,7 @@ describe('Group Model Unit Tests:', function() {
 		user.save(function() {
 			group = new Group({
 				title: 'Group Title',
-				content: 'Group Content',
+				description: 'Group Desc',
 				user: user
 			});
 

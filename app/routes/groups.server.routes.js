@@ -14,6 +14,7 @@ module.exports = function(app) {
 
 	app.route('/groups/:groupId')
 		.get(groups.read)
+                .put(users.requiresLogin, groups.joinGroup)
 		.put(users.requiresLogin, groups.hasAuthorization, groups.update)
 		.delete(users.requiresLogin, groups.hasAuthorization, groups.delete);
 

@@ -39,7 +39,7 @@ describe('Group CRUD tests', function() {
 		user.save(function() {
 			group = {
 				title: 'Group Title',
-				content: 'Group Content'
+				description: 'Group Description'
 			};
 
 			done();

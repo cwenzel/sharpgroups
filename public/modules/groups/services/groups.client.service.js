@@ -8,7 +8,10 @@ angular.module('groups').factory('Groups', ['$resource',
 		}, {
 			update: {
 				method: 'PUT'
-			}
+			},
+			joinGroup: {
+				method: 'PUT'
+			},
 		});
 	}
 ]);

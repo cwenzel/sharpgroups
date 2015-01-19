@@ -54,7 +54,7 @@
 			// Create sample group using the Groups service
 			var sampleGroup = new Groups({
 				title: 'An Group about MEAN',
-				content: 'MEAN rocks!'
+				description: 'MEAN rocks!'
 			});
 
 			// Create a sample groups array that includes the new group
@@ -75,7 +75,7 @@
 			// Define a sample group object
 			var sampleGroup = new Groups({
 				title: 'An Group about MEAN',
-				content: 'MEAN rocks!'
+				description: 'MEAN rocks!'
 			});
 
 			// Set the URL parameter
@@ -96,19 +96,19 @@
 			// Create a sample group object
 			var sampleGroupPostData = new Groups({
 				title: 'An Group about MEAN',
-				content: 'MEAN rocks!'
+				description: 'MEAN rocks!'
 			});
 
 			// Create a sample group response
 			var sampleGroupResponse = new Groups({
 				_id: '525cf20451979dea2c000001',
 				title: 'An Group about MEAN',
-				content: 'MEAN rocks!'
+				description: 'MEAN rocks!'
 			});
 
 			// Fixture mock form input values
 			scope.title = 'An Group about MEAN';
-			scope.content = 'MEAN rocks!';
+			scope.description = 'MEAN rocks!';
 
 			// Set POST response
 			$httpBackend.expectPOST('groups', sampleGroupPostData).respond(sampleGroupResponse);
@@ -119,7 +119,7 @@
 
 			// Test form inputs are reset
 			expect(scope.title).toEqual('');
-			expect(scope.content).toEqual('');
+			expect(scope.description).toEqual('');
 
 			// Test URL redirection after the group was created
 			expect($location.path()).toBe('/groups/' + sampleGroupResponse._id);
@@ -130,7 +130,7 @@
 			var sampleGroupPutData = new Groups({
 				_id: '525cf20451979dea2c000001',
 				title: 'An Group about MEAN',
-				content: 'MEAN Rocks!'
+				description: 'MEAN Rocks!'
 			});
 
 			// Mock group in scope

@@ -20,15 +20,28 @@ var GroupSchema = new Schema({
 		trim: true,
 		required: 'Title cannot be blank'
 	},
-	content: {
+	description: {
 		type: String,
 		default: '',
 		trim: true
 	},
-	user: {
+        bankroll: {
+                type: Number
+        },
+        startDate: {
+                type: Date
+        },
+        endDate: {
+                type: Date
+        },
+	commissioner: {
 		type: Schema.ObjectId,
 		ref: 'User'
-	}
+	},
+        players: [{
+                type: Schema.ObjectId,
+                ref: 'User'
+        }],
 });
 
 mongoose.model('Group', GroupSchema);

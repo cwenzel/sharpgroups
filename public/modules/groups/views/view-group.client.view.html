@@ -2,7 +2,7 @@
 	<div class="page-header">
 		<h1 data-ng-bind="group.title"></h1>
 	</div>
-	<div class="pull-right" data-ng-show="authentication.user._id == group.user._id">
+	<div class="pull-right" data-ng-show="authentication.user._id == group.commissioner._id">
 		<a class="btn btn-primary" href="/#!/groups/{{group._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
 		</a>
@@ -15,8 +15,25 @@
 			Posted on
 			<span data-ng-bind="group.created | date:'mediumDate'"></span>
 			by
-			<span data-ng-bind="group.user.displayName"></span>
+			<span data-ng-bind="group.commissioner.displayName"></span>
 		</em>
+                <br />
+		<em class="text-muted">
+			Starting bankroll
+			<span data-ng-bind="group.bankroll"></span>
+		</em>
+                <br />
+                <em class="text-muted">
+			Start date
+			<span data-ng-bind="group.startDate | date:'mediumDate'"></span>
+		</em>
+                <br />
+                <em class="text-muted">
+			End date
+			<span data-ng-bind="group.endDate | date:'mediumDate'"></span>
+		</em>
+
 	</small>
-	<p class="lead" data-ng-bind="group.content"></p>
+	<p class="lead" data-ng-bind="group.description"></p>
+        <button class="btn btn-primary btn-lg" ng-click="joinGroup()">Join sharpgroup</button>
 </section>

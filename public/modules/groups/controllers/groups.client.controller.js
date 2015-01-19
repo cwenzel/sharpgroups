@@ -7,13 +7,17 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 		$scope.create = function() {
 			var group = new Groups({
 				title: this.title,
-				content: this.content
+				description: this.description,
+                                endDate: this.endDate,
+                                startDate: this.startDate,
+                                bankroll: this.bankroll,
 			});
 			group.$save(function(response) {
 				$location.path('groups/' + response._id);
 
 				$scope.title = '';
-				$scope.content = '';
+				$scope.description = '';
+                                $scope.bankroll = 0;
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -54,5 +58,14 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				groupId: $stateParams.groupId
 			});
 		};
+
+                $scope.joinGroup = function(group) {
+			var group = $scope.group;
+			group.$joinGroup(function() {
+				$location.path('groups/' + group._id);
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+                };
 	}
 ]);

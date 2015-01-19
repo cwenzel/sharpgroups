@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var group = new Group(req.body);
-	group.user = req.user;
+	group.commissioner = req.user;
 
 	group.save(function(err) {
 		if (err) {
@@ -73,7 +73,7 @@ exports.delete = function(req, res) {
  * List of groups
  */
 exports.list = function(req, res) {
-	Group.find().sort('-created').populate('user', 'displayName').exec(function(err, groups) {
+	Group.find().sort('-created').populate('commissioner', 'displayName').exec(function(err, groups) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -95,7 +95,7 @@ exports.groupByID = function(req, res, next, id) {
 		});
 	}
 
-	Group.findById(id).populate('user', 'displayName').exec(function(err, group) {
+	Group.findById(id).populate('commissioner', 'displayName').exec(function(err, group) {
 		if (err) return next(err);
 		if (!group) {
 			return res.status(404).send({
@@ -107,11 +107,28 @@ exports.groupByID = function(req, res, next, id) {
 	});
 };
 
+exports.joinGroup = function(req, res, next) {
+	
+	var group = req.group;
+	group = _.extend(group, req.body);
+	group.players.push(req.user);
+
+	group.save(function(err) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json(group);
+		}
+	});
+}
+
 /**
  * Group authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.group.user.id !== req.user.id) {
+	if (req.group.commissioner.id !== req.user.id) {
 		return res.status(403).send({
 			message: 'User is not authorized'
 		});

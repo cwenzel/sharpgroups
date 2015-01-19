@@ -17,6 +17,10 @@ angular.module('groups').config(['$stateProvider',
 			url: '/groups/:groupId',
 			templateUrl: 'modules/groups/views/view-group.client.view.html'
 		}).
+		state('joinGroup', {
+			url: '/groups/join/:groupId',
+			templateUrl: 'modules/groups/views/view-group.client.view.html'
+		}).
 		state('editGroup', {
 			url: '/groups/:groupId/edit',
 			templateUrl: 'modules/groups/views/edit-group.client.view.html'
