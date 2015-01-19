@@ -18,7 +18,7 @@ module.exports = {
 		}
 	},
 	app: {
-		title: 'MEAN.JS - Development Environment'
+		title: 'sharpgroups - Fantasy games for fun'
 	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',
