@@ -12,7 +12,10 @@
 			</p>
 		</div>
 		<div class="row">
-			<p>
+                        <p data-ng-hide="authentication.user">
+                        	<a class="btn btn-primary btn-lg" href="/#!/signin" target="_blank">Create sharpgroup</a>
+                        </p>
+			<p data-ng-show="authentication.user">
 				<a class="btn btn-primary btn-lg" href="/#!/creategroup" target="_blank">Create sharpgroup</a>
 			</p>
 		</div>
