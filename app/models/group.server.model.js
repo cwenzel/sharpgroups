@@ -42,6 +42,16 @@ var GroupSchema = new Schema({
                 type: Schema.ObjectId,
                 ref: 'User'
         }],
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+});
+
+var userIsInGroup = false;
+GroupSchema.virtual('userInGroup').get(function () {
+	return userIsInGroup;
+}).set(function (val) {
+	userIsInGroup = val;
 });
 
 mongoose.model('Group', GroupSchema);

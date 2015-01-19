@@ -12,6 +12,9 @@ angular.module('groups').factory('Groups', ['$resource',
 			joinGroup: {
 				method: 'PUT'
 			},
+			userInGroup: {
+				method: 'PUT'
+			},
 		});
 	}
 ]);

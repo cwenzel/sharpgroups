@@ -32,8 +32,18 @@
 			End date
 			<span data-ng-bind="group.endDate | date:'mediumDate'"></span>
 		</em>
-
+		<br />
+                <em class="text-muted">
+			Currently
+			<span>{{getPlayerCount() | number:0}}</span>
+			players
+		</em>
 	</small>
 	<p class="lead" data-ng-bind="group.description"></p>
-        <button class="btn btn-primary btn-lg" ng-click="joinGroup()">Join sharpgroup</button>
+        <div data-ng-show="!group.userInGroup">
+		<button class="btn btn-primary btn-lg" ng-click="joinGroup()">Join sharpgroup</button>
+	</div>
+	<div data-ng-show="group.userInGroup">
+		<p>You are a member this group, place wagers below:</p>
+	</div>
 </section>

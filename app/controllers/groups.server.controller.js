@@ -30,6 +30,9 @@ exports.create = function(req, res) {
  * Show the current group
  */
 exports.read = function(req, res) {
+	var userInGroup = (req.group.players.indexOf(req.user._id) >= 0);
+	req.group.set('userInGroup', userInGroup);
+
 	res.json(req.group);
 };
 
@@ -112,6 +115,7 @@ exports.joinGroup = function(req, res, next) {
 	var group = req.group;
 	group = _.extend(group, req.body);
 	group.players.push(req.user);
+	group.set('userInGroup', true)
 
 	group.save(function(err) {
 		if (err) {

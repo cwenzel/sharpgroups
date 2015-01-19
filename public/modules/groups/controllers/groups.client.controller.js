@@ -3,7 +3,6 @@
 angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Groups',
 	function($scope, $stateParams, $location, Authentication, Groups) {
 		$scope.authentication = Authentication;
-
 		$scope.create = function() {
 			var group = new Groups({
 				title: this.title,
@@ -62,10 +61,17 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
                 $scope.joinGroup = function(group) {
 			var group = $scope.group;
 			group.$joinGroup(function() {
-				$location.path('groups/' + group._id);
+				$location.reload(true);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
                 };
+
+		$scope.getPlayerCount = function() {
+			var group = $scope.group;
+			if (group && group.players)
+				return group.players.length;
+			return 0;
+		};
 	}
 ]);
