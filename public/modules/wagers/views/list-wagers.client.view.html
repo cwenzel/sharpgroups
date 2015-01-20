@@ -1,0 +1,19 @@
+<section data-ng-controller="WagersController" data-ng-init="find()">
+	<div class="page-header">
+		<h1>Available Wagers</h1>
+	</div>
+	<div class="list-wager">
+		<a data-ng-repeat="wager in wagers" data-ng-href="#!/wagers/{{wager._id}}" class="list-wager-item">
+			<small class="list-wager-item-text">
+				<span data-ng-bind="wager.sport"></span>
+				on
+				<span data-ng-bind="wager.eventDate | date:'mediumDate'"></span>
+			</small>
+			<h4 class="list-wager-item-heading" data-ng-bind="wager.title"></h4>
+			<p class="list-wager-item-text" data-ng-bind="wager.description"></p>
+		</a>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
+		Sorry, there are no wagers for the time frame of your group.
+	</div>
+</section>
