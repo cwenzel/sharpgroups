@@ -1,0 +1,12 @@
+<section data-ng-controller="WagersController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1 data-ng-bind="wager.description"></h1>
+	</div>
+	<p class="lead" data-ng-bind="wager.juice"></p>
+        <div data-ng-show="!wager.userPlacedWager">
+		<button class="btn btn-primary btn-lg" ng-click="placeWager()">Place Wager</button>
+	</div>
+	<div data-ng-show="wager.userPlacedWager">
+		<h2>You have placed this wager. Good Luck!</h2>
+	</div>
+</section>

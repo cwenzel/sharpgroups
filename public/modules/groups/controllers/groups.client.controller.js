@@ -61,7 +61,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
                 $scope.joinGroup = function(group) {
 			var group = $scope.group;
 			group.$joinGroup(function() {
-				$location.reload(true);
+				location.reload(true);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

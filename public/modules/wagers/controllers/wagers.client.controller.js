@@ -36,5 +36,15 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				wagerId: $stateParams.wagerId
 			});
 		};
+
+                $scope.placeWager = function(wager) {
+			var wager = $scope.wager;
+			wager.$placeWager(function() {
+				location.reload(true);
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+                };
+
 	}
 ]);

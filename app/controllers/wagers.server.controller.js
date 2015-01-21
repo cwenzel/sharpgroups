@@ -30,6 +30,9 @@ exports.create = function(req, res) {
  * Show the current wager
  */
 exports.read = function(req, res) {
+	var userPlacedWager = (req.wager.takers.indexOf(req.user._id) >= 0);
+	req.wager.set('userPlacedWager', userPlacedWager);
+
 	res.json(req.wager);
 };
 
@@ -100,6 +103,26 @@ exports.wagerByID = function(req, res, next, id) {
 		next();
 	});
 };
+
+exports.placeWager = function(req, res, next) {
+	
+	var wager = req.wager;
+	wager = _.extend(wager, req.body);
+	wager.takers.push(req.user);
+	wager.set('userPlacedWager', true)
+
+	wager.save(function(err) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json(wager);
+		}
+	});
+}
+
+
 /**
  * Wager authorization middleware
  */

@@ -9,6 +9,9 @@ angular.module('wagers').factory('Wagers', ['$resource',
 			update: {
 				method: 'PUT'
 			},
+			placeWager: {
+				method: 'PUT'
+			},
 		});
 	}
 ]);
