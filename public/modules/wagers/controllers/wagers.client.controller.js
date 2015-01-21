@@ -40,7 +40,7 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
                 $scope.placeWager = function(wager) {
 			var wager = $scope.wager;
 			wager.$placeWager(function() {
-				location.reload(true);
+				// do nothing for now
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
