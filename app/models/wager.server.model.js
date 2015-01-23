@@ -10,32 +10,24 @@ var mongoose = require('mongoose'),
  * Wager Schema
  */
 var WagerSchema = new Schema({
-        eventDate: {
-                type: Date
+        boardItem: {
+		type: Schema.ObjectId,
+		ref: 'BoardItem'
         },
-	sport: {
-		type: String
+	user: {
+		type: Schema.ObjectId,
+		ref: 'User'
 	},
-	description: {
-		type: String
+	group: {
+		type: Schema.ObjectId,
+		ref: 'Group'
 	},
-	juice: {
-		type: String
+	amount: {
+		type: Number
 	},
-	takers: [{
-                type: Schema.ObjectId,
-                ref: 'User'
-	}],
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
-});
-
-var userPlacedWager = false;
-WagerSchema.virtual('userPlacedWager').get(function () {
-	return userPlacedWager;
-}).set(function (val) {
-	userPlacedWager = val;
 });
 
 mongoose.model('Wager', WagerSchema);

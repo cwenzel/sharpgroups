@@ -9,6 +9,10 @@ angular.module('wagers').config(['$stateProvider',
 			url: '/wagers',
 			templateUrl: 'modules/wagers/views/list-wagers.client.view.html'
 		}).
+		state('createWager', {
+			url: '/wagers/create/:boardItemId/:groupId',
+			templateUrl: 'modules/wagers/views/create-wager.client.view.html'
+		}).
 		state('viewWager', {
 			url: '/wagers/:wagerId',
 			templateUrl: 'modules/wagers/views/view-wager.client.view.html'

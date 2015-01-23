@@ -3,10 +3,22 @@
 		<h1 data-ng-bind="wager.description"></h1>
 	</div>
 	<p class="lead" data-ng-bind="wager.juice"></p>
-        <div data-ng-show="!wager.userPlacedWager">
-		<button class="btn btn-primary btn-lg" ng-click="placeWager()">Place Wager</button>
-	</div>
-	<div data-ng-show="wager.userPlacedWager">
-		<h2>You have placed this wager. Good Luck!</h2>
+	<div class="col-md-12">
+		<form name="groupForm" class="form-horizontal" data-ng-submit="create()" novalidate>
+			<fieldset>
+                                <div class="form-group">
+                                        <label class="control-label" for="bankroll">Bankroll</label>
+                                        <div class="controls">
+                                                 <input name="bankroll" type="number" data-ng-model="bankroll" id="bankroll" class="form-control" placeholder="How many 'sharps' should each participant start the game with?" required>
+                                        </div>
+                                </div>
+				<div class="form-group">
+					<input type="submit" class="btn btn-default">
+				</div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+			</fieldset>
+		</form>
 	</div>
 </section>

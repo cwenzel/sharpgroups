@@ -1,0 +1,36 @@
+<section data-ng-controller="WagersController">
+	<div class="page-header">
+		<h1>Place Wager</h1>
+	</div>
+	<div class="col-md-12">
+		<div data-ng-controller="BoardItemsController" data-ng-init="findOne()">
+			<p data-ng-bind="boardItem.group"></p>
+			<p data-ng-bind="boardItem.sport"></p>
+			<p data-ng-bind="boardItem.description"></p>
+			<p data-ng-bind="boardItem.juice"></p>
+		</div>
+		<form name="groupForm" class="form-horizontal" data-ng-submit="create()" novalidate>
+			<fieldset>
+                                <div class="form-group">
+                                        <label class="control-label" for="amount">Wager amount</label>
+                                        <div class="controls">
+                                                 <input name="amount" type="number" data-ng-model="amount" id="amount" class="form-control" placeholder="How many 'sharps' do you want to put on this outcome?" required>
+                                        </div>
+                                </div>
+				<div data-ng-controller="BoardItemsController" data-ng-init="findOne()">
+					<input type="hidden" data-ng-bind="boardItem._id" data-ng-model="boardItemId"/>
+				</div>
+				<div data-ng-controller="GroupsController" data-ng-init="findOne()">
+					<input type="hidden" data-ng-bind="group._id" data-ng-model="groupId"/>
+				</div>
+
+				<div class="form-group">
+					<input type="submit" class="btn btn-default">
+				</div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</section>

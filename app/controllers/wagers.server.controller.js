@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var wager = new Wager(req.body);
-	wager.commissioner = req.user;
+	wager.user = req.user;
 
 	wager.save(function(err) {
 		if (err) {
@@ -30,9 +30,6 @@ exports.create = function(req, res) {
  * Show the current wager
  */
 exports.read = function(req, res) {
-	var userPlacedWager = (req.wager.takers.indexOf(req.user._id) >= 0);
-	req.wager.set('userPlacedWager', userPlacedWager);
-
 	res.json(req.wager);
 };
 

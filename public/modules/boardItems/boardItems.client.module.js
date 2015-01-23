@@ -4,4 +4,3 @@
 
 ApplicationConfiguration.registerModule('boardItems');
 ApplicationConfiguration.registerModule('groups');
-ApplicationConfiguration.registerModule('wagers');

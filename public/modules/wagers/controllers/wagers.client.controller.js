@@ -4,8 +4,11 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Wagers) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
+			debugger;
 			var wager = new Wagers({
 				amount: this.amount,
+				boardItem: $stateParams.boardItemId,
+				group: $stateParams.groupId,
 			});
 			wager.$save(function(response) {
 				$location.path('wagers/' + response._id);

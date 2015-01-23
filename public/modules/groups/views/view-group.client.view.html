@@ -44,6 +44,7 @@
 		<button class="btn btn-primary btn-lg" ng-click="joinGroup()">Join sharpgroup</button>
 	</div>
 	<div data-ng-show="group.userInGroup">
-		<p>You are a member this group, place wagers below:</p>
+		<p>You are a member of this group.</p>
+		<a class="btn btn-primary btn-lg" href="/#!/boardItems/{{group._id}}"}>Place a wager</a>
 	</div>
 </section>
