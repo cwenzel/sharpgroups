@@ -5,8 +5,8 @@
 	<h2>Click on an item below to inspect it.</h2>
 	
 	<div data-ng-controller="BoardItemsController" data-ng-init="find()">
-		<div class="list-group">
-			<a data-ng-repeat="boardItem in boardItems" data-ng-href="#!/boardItems/{{boardItem._id}}/{{group._id}}" class="list-group-item">
+		<div class="list-group" data-ng-repeat="boardItem in boardItems" style="position: relative">
+			<a data-ng-href="#!/boardItems/{{boardItem._id}}/{{group._id}}" class="list-group-item" style="position: absolute; width: 100%">
 				<small class="list-group-item-text">
 					<span data-ng-bind="boardItem.sport"></span>
 					on
@@ -15,6 +15,7 @@
 				<h4 class="list-group-item-heading" data-ng-bind="boardItem.description"></h4>
 				<p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
 			</a>
+			<a class="btn btn-primary btn-lg" data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}" style="margin: 20px; position: absolute; right: 0%">Place Wager</a>
 		</div>
 		<div class="alert alert-warning text-center" data-ng-if="boardItems.$resolved && !boardItems.length">
 			Sorry, there is no board for the time frame of your group.
