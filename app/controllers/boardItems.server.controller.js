@@ -38,7 +38,7 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
 	BoardItem.find({}, function (err, boardItems) {
-        	res.json(boardItems);
+		res.json(boardItems);
     	});
 };
 
