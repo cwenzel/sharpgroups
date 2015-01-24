@@ -45,6 +45,7 @@
 	</div>
 	<div data-ng-show="group.userInGroup">
 		<p>You are a member of this group.</p>
+		<h2>Your Bankroll: <span data-ng-bind="group.userBankroll"></span></h2>
 		<a class="btn btn-primary btn-lg" href="/#!/boardItems/{{group._id}}"}>Place a wager</a>
 	</div>
 </section>

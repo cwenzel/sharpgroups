@@ -6,6 +6,26 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
+
+function startDateValidator(startDate) {
+	if (this.endDate < startDate)
+		return false;
+
+	var startDateObject = new Date(startDate.toString());
+	console.log(startDate);
+	console.log(startDateObject.toUTCString());
+	
+	var currentDate = new Date();
+	console.log(currentDate.toUTCString());
+
+	if (startDateObject < currentDate)
+		return false;
+
+	return true;
+}
+
+var customStartDateValidator = [startDateValidator, 'The start date can not be in the past and must be before the end date'];
+
 /**
  * Group Schema
  */
@@ -29,7 +49,8 @@ var GroupSchema = new Schema({
                 type: Number
         },
         startDate: {
-                type: Date
+                type: Date,
+		validate: customStartDateValidator
         },
         endDate: {
                 type: Date
@@ -52,6 +73,13 @@ GroupSchema.virtual('userInGroup').get(function () {
 	return userIsInGroup;
 }).set(function (val) {
 	userIsInGroup = val;
+});
+
+var userBankroll = 0;
+GroupSchema.virtual('userBankroll').get(function() {
+	return userBankroll;
+}).set(function (val) {
+	userBankroll = val;
 });
 
 mongoose.model('Group', GroupSchema);

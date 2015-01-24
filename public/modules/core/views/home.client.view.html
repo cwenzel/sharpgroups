@@ -13,10 +13,16 @@
 		</div>
 		<div class="row">
                         <p data-ng-hide="authentication.user">
-                        	<a class="btn btn-primary btn-lg" href="/#!/signin" target="_blank">Create sharpgroup</a>
+                        	<a class="btn btn-primary btn-lg" href="/#!/signin">Create sharpgroup</a>
                         </p>
 			<p data-ng-show="authentication.user">
-				<a class="btn btn-primary btn-lg" href="/#!/groups/create" target="_blank">Create sharpgroup</a>
+				<a class="btn btn-primary btn-lg" href="/#!/groups/create">Create sharpgroup</a>
+			</p>
+                        <p data-ng-hide="authentication.user">
+                        	<a class="btn btn-primary btn-lg" href="/#!/signin">Join sharpgroup</a>
+                        </p>
+			<p data-ng-show="authentication.user">
+				<a class="btn btn-primary btn-lg" href="/#!/groups">Join sharpgroup</a>
 			</p>
 		</div>
 	</div>
@@ -49,7 +55,7 @@
 			<h2>
 				<strong>F</strong>antasy Sportsbook
 			</h2>
-			<p><a target="_blank" href="/#!/creategroup">Fantasy Sportsbook</a> is a game that is loosely based on sports betting. You make wagers with fake money AKA sharps. Whoever has the most money at the end of the defined season wins the sharpgroup. This game can be played at any time of the year, for any combinition of available sports currently in season. Sports include NFL, NBA, MLB, NHL, PGA Tour, Triple Crown Races, NCAAB and NCAAF</p>
+			<p><a data-ng-hide="authentication.user" href="/#!/signin">Fantasy Sportsbook</a><a data-ng-show="authentication.user" href="/#!/groups/create">Fantasy Sportsbook</a> is a game that is loosely based on sports betting. You make wagers with fake money AKA sharps. Whoever has the most money at the end of the defined season wins the sharpgroup. This game can be played at any time of the year, for any combinition of available sports currently in season. Sports include NFL, NBA, MLB, NHL, PGA Tour, Triple Crown Races, NCAAB and NCAAF</p>
 		</div>
 		<div class="col-md-3">
 			<h2>

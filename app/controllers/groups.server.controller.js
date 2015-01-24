@@ -16,6 +16,7 @@ exports.create = function(req, res) {
 	var group = new Group(req.body);
 	group.commissioner = req.user;
 
+
 	group.save(function(err) {
 		if (err) {
 			return res.status(400).send({
@@ -27,6 +28,16 @@ exports.create = function(req, res) {
 	});
 };
 
+
+function getUserBankrollAmount(groupId, userId, callback) {
+	Bank.find({'group' : groupId, 'user' : userId}).lean().exec(function (err, bank) {
+		bank = bank[0];
+		callback(bank.amount);
+	});
+}
+
+
+
 /**
  * Show the current group
  */
@@ -34,7 +45,15 @@ exports.read = function(req, res) {
 	var userInGroup = (req.group.players.indexOf(req.user._id) >= 0);
 	req.group.set('userInGroup', userInGroup);
 
-	res.json(req.group);
+	if (userInGroup) {
+		getUserBankrollAmount(req.group, req.user, function(amount){
+			req.group.set('userBankroll', amount);
+			res.json(req.group);
+		});
+	}
+	else {
+		res.json(req.group);
+	}
 };
 
 /**
@@ -111,13 +130,14 @@ exports.groupByID = function(req, res, next, id) {
 	});
 };
 
-function setUpBankroll(groupId, userId) {
+function setUpBankroll(groupId, userId, callback) {
 	Group.findById(groupId).lean().exec(function (err, group) {
 		var bank = new Bank();
 		bank.user = userId;
 		bank.group = group._id;
 		bank.amount = group.bankroll;
 		bank.save();
+		callback(bank.amount);
 	});
 }
 
@@ -127,16 +147,18 @@ exports.joinGroup = function(req, res, next) {
 	group = _.extend(group, req.body);
 	group.players.push(req.user);
 	group.set('userInGroup', true)
-	setUpBankroll(req.group, req.user);
+	setUpBankroll(req.group, req.user, function(userBankrollAmount){
+		group.set('userBankroll', userBankrollAmount);
 
-	group.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(group);
-		}
+		group.save(function(err) {
+			if (err) {
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			} else {
+				res.json(group);
+			}
+		});
 	});
 }
 
