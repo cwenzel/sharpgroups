@@ -63,6 +63,10 @@ var GroupSchema = new Schema({
                 type: Schema.ObjectId,
                 ref: 'User'
         }],
+	events: [{
+		type: Schema.ObjectId,
+		ref: 'Event'
+	}],
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

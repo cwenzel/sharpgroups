@@ -1,15 +1,26 @@
 'use strict';
 
-angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Groups',
-	function($scope, $stateParams, $location, Authentication, Groups) {
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
+	function($scope, $stateParams, $location, $http, Authentication, Groups) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
+			// couldn't figure this out the angular way, so old school it is
+			var eventCheckboxes = document.getElementById('groupForm')['events'];
+			var checkedEvents = [];
+			for (var i in eventCheckboxes) {
+				var checkbox = eventCheckboxes[i];
+
+				if (checkbox.checked)
+					checkedEvents.push(checkbox.value);
+			}
+
 			var group = new Groups({
 				title: this.title,
 				description: this.description,
                                 endDate: this.endDate,
                                 startDate: this.startDate,
                                 bankroll: this.bankroll,
+				events: checkedEvents
 			});
 			group.$save(function(response) {
 				$location.path('groups/' + response._id);
@@ -72,6 +83,15 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 			if (group && group.players)
 				return group.players.length;
 			return 0;
+		};
+
+		$scope.getEvents = function() {
+			$http.get('/events').
+				  success(function(data, status, headers, config) {
+				  	$scope.stockEvents = data;
+				  }).
+				  error(function(data, status, headers, config) {
+				  });
 		};
 	}
 ]);
