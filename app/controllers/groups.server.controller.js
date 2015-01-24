@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Group = mongoose.model('Group'),
+	Bank = mongoose.model('Bank'),
 	_ = require('lodash');
 
 /**
@@ -110,12 +111,25 @@ exports.groupByID = function(req, res, next, id) {
 	});
 };
 
+function setUpBankroll(groupId, userId) {
+	Group.findById(groupId).lean().exec(function (err, group) {
+		var bank = new Bank();
+		bank.user = userId;
+		bank.group = group._id;
+		bank.amount = group.bankroll;
+		bank.save();
+	});
+
+
+}
+
 exports.joinGroup = function(req, res, next) {
 	
 	var group = req.group;
 	group = _.extend(group, req.body);
 	group.players.push(req.user);
 	group.set('userInGroup', true)
+	setUpBankroll(req.group, req.user);
 
 	group.save(function(err) {
 		if (err) {

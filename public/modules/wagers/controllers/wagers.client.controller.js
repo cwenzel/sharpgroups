@@ -11,7 +11,7 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				group: $stateParams.groupId,
 			});
 			wager.$save(function(response) {
-				$location.path('wagers/' + response._id);
+				$location.path('groups/' + $stateParams.groupId);
 
 				$scope.amount = 0;
 			}, function(errorResponse) {
