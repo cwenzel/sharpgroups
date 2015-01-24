@@ -1,0 +1,1 @@
+db.events.insert([{"title" : "NFL"}, {"title" : "CFB"}, {"title" : "NBA"}, {"title" : "CBB"}, {"title" : "MLB"}, {"title" : "NHL"}, {"title" : "PGA Tour"}, {"title" : "Triple Crown"}, {"title" : "Academy Awards"}])

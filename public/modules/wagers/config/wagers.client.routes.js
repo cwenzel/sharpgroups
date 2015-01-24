@@ -14,7 +14,7 @@ angular.module('wagers').config(['$stateProvider',
 			templateUrl: 'modules/wagers/views/create-wager.client.view.html'
 		}).
 		state('viewWager', {
-			url: '/wagers/:wagerId',
+			url: '/wagers/:wagerId/:boardItemId/:groupId',
 			templateUrl: 'modules/wagers/views/view-wager.client.view.html'
 		});
 	}

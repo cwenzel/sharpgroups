@@ -4,7 +4,7 @@
 	</div>
 	<h2>Click on a wager below to inspect it.</h2>
 	<div class="list-group" data-ng-controller="WagersController" data-ng-init="find()">
-		<a data-ng-repeat="wager in wagers" data-ng-href="#!/wagers/{{wager._id}}" class="list-group-item">
+		<a data-ng-repeat="wager in wagers" data-ng-href="#!/wagers/{{wager._id}}/{{wager.boardItem._id}}/{{wager.groupId}}" class="list-group-item">
 			<small class="list-group-item-text">
 				<span data-ng-bind="wager.boardItem.sport"></span>
 				on

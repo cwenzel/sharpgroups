@@ -89,7 +89,7 @@ exports.list = function(req, res) {
 
 			for (var i in wagers) {
 				var boardItem = boardItemLookup[wagers[i].boardItem];
-				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem});
+				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});
 			}
 
 			res.json(returnArray);
