@@ -21,7 +21,7 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 		};
 
 		$scope.find = function() {
-			$scope.wagers = Wagers.query();
+			$scope.wagers = Wagers.query({group : $stateParams.groupId});
 		};
 
 		$scope.findOne = function() {

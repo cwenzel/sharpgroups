@@ -6,7 +6,7 @@ angular.module('wagers').config(['$stateProvider',
 		// wagers state routing
 		$stateProvider.
 		state('listWagers', {
-			url: '/wagers',
+			url: '/wagers/:groupId',
 			templateUrl: 'modules/wagers/views/list-wagers.client.view.html'
 		}).
 		state('createWager', {

@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Wager = mongoose.model('Wager'),
 	Bank = mongoose.model('Bank'),
+	BoardItem = mongoose.model('BoardItem'),
 	_ = require('lodash');
 
 /**
@@ -62,12 +63,37 @@ exports.read = function(req, res) {
 	res.json(req.wager);
 };
 
+function getBoardItems(boardItemIds, callback) {
+	BoardItem.find(boardItemIds).exec(function(err, boardItems) {
+		callback(boardItems);
+	});
+}
+
 /**
  * List of wagers
  */
 exports.list = function(req, res) {
-	Wager.find({}, function (err, wagers) {
-        	res.json(wagers);
+	Wager.find({'user' : req.user, 'group' : req.query.group}, function (err, wagers) {
+		var boardItemQueryArray = [];
+		for (var i in wagers) {
+			boardItemQueryArray.push({'_id' : wagers[i].boardItem});
+		}
+
+		getBoardItems(boardItemQueryArray, function (boardItems) {
+			
+			var boardItemLookup = {};
+			var returnArray = [];
+			for (var i in boardItems) {
+    				boardItemLookup[boardItems[i]._id] = boardItems[i];
+			}
+
+			for (var i in wagers) {
+				var boardItem = boardItemLookup[wagers[i].boardItem];
+				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem});
+			}
+
+			res.json(returnArray);
+		});
     	});
 };
 
