@@ -6,7 +6,28 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Wager = mongoose.model('Wager'),
+	Bank = mongoose.model('Bank'),
 	_ = require('lodash');
+
+/**
+ * Updates the bankroll of the user who placed the wager
+ * Returns an error string if the user doesn't have the dough
+ */
+function updateBankroll(groupId, userId, betAmount, callback) {
+	Bank.find({'group' : groupId, 'user' : userId}).exec(function (err, bank) {
+		bank = bank[0];
+		var newBankAmount = bank.amount - betAmount;
+
+		if (newBankAmount < 0) {
+			callback('Not enough sharps for wager');
+		}
+		else {
+			bank.amount = newBankAmount;
+			bank.save();
+			callback();
+		}
+	});
+}
 
 /**
  * Create a wager
@@ -15,13 +36,21 @@ exports.create = function(req, res) {
 	var wager = new Wager(req.body);
 	wager.user = req.user;
 
-	wager.save(function(err) {
+	updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
 		if (err) {
 			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+				message: err
 			});
 		} else {
-			res.json(wager);
+			wager.save(function(err) {
+				if (err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				} else {
+					res.json(wager);
+				}
+			});
 		}
 	});
 };
@@ -31,42 +60,6 @@ exports.create = function(req, res) {
  */
 exports.read = function(req, res) {
 	res.json(req.wager);
-};
-
-/**
- * Update a wager
- */
-exports.update = function(req, res) {
-	var wager = req.wager;
-
-	wager = _.extend(wager, req.body);
-
-	wager.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(wager);
-		}
-	});
-};
-
-/**
- * Delete a wager
- */
-exports.delete = function(req, res) {
-	var wager = req.wager;
-
-	wager.remove(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(wager);
-		}
-	});
 };
 
 /**
@@ -100,25 +93,6 @@ exports.wagerByID = function(req, res, next, id) {
 		next();
 	});
 };
-
-exports.placeWager = function(req, res, next) {
-	
-	var wager = req.wager;
-	wager = _.extend(wager, req.body);
-	wager.takers.push(req.user);
-	wager.set('userPlacedWager', true)
-
-	wager.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(wager);
-		}
-	});
-}
-
 
 /**
  * Wager authorization middleware

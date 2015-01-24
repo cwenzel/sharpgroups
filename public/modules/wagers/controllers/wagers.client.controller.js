@@ -4,7 +4,6 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Wagers) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
-			debugger;
 			var wager = new Wagers({
 				amount: this.amount,
 				boardItem: $stateParams.boardItemId,
@@ -16,17 +15,8 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				$scope.amount = 0;
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
-			});
-		};
-
-
-		$scope.update = function() {
-			var wager = $scope.wager;
-
-			wager.$update(function() {
-				$location.path('wagers/' + wager._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				//TODO this obviously sucks but hey don't try to cheat!
+				alert($scope.error);
 			});
 		};
 
@@ -39,15 +29,5 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				wagerId: $stateParams.wagerId
 			});
 		};
-
-                $scope.placeWager = function(wager) {
-			var wager = $scope.wager;
-			wager.$placeWager(function() {
-				// do nothing for now
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-                };
-
 	}
 ]);

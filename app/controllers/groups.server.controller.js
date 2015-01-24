@@ -119,8 +119,6 @@ function setUpBankroll(groupId, userId) {
 		bank.amount = group.bankroll;
 		bank.save();
 	});
-
-
 }
 
 exports.joinGroup = function(req, res, next) {
