@@ -1,4 +1,10 @@
 [
+{ "sport": "NFL", "description" : "Will India Menzel's rendention of the national antem go over two minutes, one second? YES", "juice" : "+105 (welcome to the group!)"},
+{ "sport": "NFL", "description" : "Will India Menzel's rendention of the national antem go over two minutes, one second? NO", "juice" : "+105 (welcome to the group!)"},
+{ "sport": "NFL", "description" : "PATRIOTS -1", "juice":"-105 " } ,
+{ "sport": "NFL", "description" : "SEAHAWKS +1", "juice":"-105 " } ,
+{ "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS OVER 47.5" , "juice": " -105" }, 
+{ "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS UNDER 47.5" , "juice": " -105" }, 
 { "sport": "NFL", "description" : "PATRIOTS-7.5", "juice":"+260 " } ,
 { "sport": "NFL", "description" : "SEAHAWKS+7.5", "juice":"-310 " } ,
 { "sport": "NFL", "description" : "PATRIOTS-10.5", "juice":"+375 " } ,
@@ -15,7 +21,6 @@
 { "sport": "NFL", "description" : "SEAHAWKS-14.5", "juice":"+500 " } ,
 { "sport": "NFL", "description" : "PATRIOTS+17.5", "juice":"-1000 "} ,
 { "sport": "NFL", "description" : "SEAHAWKS-17.5", "juice":"+650 " } ,
-
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS OVER35.5" , "juice": " -500" }, 
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS UNDER35.5" , "juice": " +400" }, 
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS OVER42.5" , "juice": " -190" }, 
@@ -24,7 +29,6 @@
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS UNDER55.5" , "juice": " -280" }, 
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS OVER62.5" , "juice": " +450" }, 
 { "sport": "NFL", "description" : "PATRIOTS/SEAHAWKS UNDER62.5" , "juice": " -600" }, 
-
 { "sport": "NFL", "description" : "OPENING COIN TOSS WILL BE HEADS", "juice" :"-102" }, 
 { "sport": "NFL", "description" : "OPENING COIN TOSS WILL BE TAILS", "juice" :"-102" }, 
 { "sport": "NFL", "description" : "WILL EITHER TEAM SCORE 3 STRAIGHT TIMES? YES ", "juice" :"-180" }, 
