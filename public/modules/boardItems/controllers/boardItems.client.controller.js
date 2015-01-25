@@ -20,7 +20,9 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 
 		$scope.find = function() {
 			var eventId = document.URL.split('/')[6]; 
-			$scope.boardItems = BoardItems.query({'eventId' : eventId});
+			$scope.boardItems = BoardItems.query({'eventId' : eventId}, function() {
+				document.getElementById('loadingMessage').innerText='';
+			});
 		};
 
 		$scope.findOne = function() {
