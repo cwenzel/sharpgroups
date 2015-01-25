@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	BoardItem = mongoose.model('BoardItem'),
+	Event = mongoose.model('Event'),
 	_ = require('lodash');
 
 
@@ -17,29 +18,14 @@ exports.read = function(req, res) {
 };
 
 /**
- * Delete a boardItem
- */
-exports.delete = function(req, res) {
-	var boardItem = req.boardItem;
-
-	boardItem.remove(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.json(boardItem);
-		}
-	});
-};
-
-/**
  * List of boardItems
  */
 exports.list = function(req, res) {
-	BoardItem.find({}, function (err, boardItems) {
-		res.json(boardItems);
-    	});
+	Event.findById(req.query.eventId, function (err, ev) {
+		BoardItem.find({'sport' : ev.title}, function (err, boardItems) {
+			res.json(boardItems);
+	    	});
+	});
 };
 
 /**

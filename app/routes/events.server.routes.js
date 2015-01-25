@@ -10,5 +10,9 @@ module.exports = function(app) {
 	// Event Routes
 	app.route('/events')
 		.get(events.list);
+	app.route('/events/groupId/:groupId')
+		.get(events.listForGroup);
+
+
 };
 

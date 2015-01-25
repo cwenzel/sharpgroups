@@ -15,8 +15,6 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				$scope.amount = 0;
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
-				//TODO this obviously sucks but hey don't try to cheat!
-				alert($scope.error);
 			});
 		};
 

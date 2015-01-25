@@ -23,3 +23,16 @@ exports.list = function(req, res) {
 		}
 	});
 };
+
+exports.listForGroup = function(req, res) {
+	Event.find({'_id' : { $in : req.group.events}}).exec(function(err, events) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json(events);
+		}
+	});
+
+};

@@ -22,6 +22,7 @@
 				</div>
 				<div data-ng-controller="GroupsController" data-ng-init="findOne()">
 					<input type="hidden" data-ng-bind="group._id" data-ng-model="groupId"/>
+					<h2>Your Bankroll: <span data-ng-bind="group.userBankroll"></span></h2>
 				</div>
 
 				<div class="form-group">

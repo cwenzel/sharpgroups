@@ -26,6 +26,17 @@ function startDateValidator(startDate) {
 
 var customStartDateValidator = [startDateValidator, 'The start date can not be in the past and must be before the end date'];
 
+
+function maxBetValidator(maxBet) {
+	if (maxBet > this.bankroll)
+		return false;
+
+	return true;
+}
+
+
+var customMaxBetValidator = [maxBetValidator, 'The maximum bet must be less than your starting bankroll'];
+
 /**
  * Group Schema
  */
@@ -48,6 +59,10 @@ var GroupSchema = new Schema({
         bankroll: {
                 type: Number
         },
+	maxBet: {
+		type: Number,
+		validate: customMaxBetValidator
+	},
         startDate: {
                 type: Date,
 		validate: customStartDateValidator

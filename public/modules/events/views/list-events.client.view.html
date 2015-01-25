@@ -1,0 +1,11 @@
+<section data-ng-controller="GroupsController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1><span data-ng-bind="group.title"></span> Bet Board</h1>
+	</div>
+	<h2>Click on an item below to wager.</h2>
+	<div class="list-group" data-ng-controller="EventsController" data-ng-init="findByGroup(group._id)">
+		<a data-ng-repeat="event in events" data-ng-href="#!/boardItems/{{group._id}}/{{event._id}}" class="list-group-item">
+			<h4 class="list-group-item-heading" data-ng-bind="event.title"></h4>
+		</a>
+	</div>
+</section>

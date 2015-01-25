@@ -23,7 +23,8 @@ var WagerSchema = new Schema({
 		ref: 'Group'
 	},
 	amount: {
-		type: Number
+		type: Number,
+		min: 1
 	},
 }, {
     toObject: { virtuals: true },

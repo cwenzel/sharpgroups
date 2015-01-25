@@ -20,7 +20,8 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
                                 endDate: this.endDate,
                                 startDate: this.startDate,
                                 bankroll: this.bankroll,
-				events: checkedEvents
+				events: checkedEvents,
+				maxBet: this.maxBet
 			});
 			group.$save(function(response) {
 				$location.path('groups/' + response._id);

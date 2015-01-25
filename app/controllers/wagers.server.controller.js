@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
 	Wager = mongoose.model('Wager'),
 	Bank = mongoose.model('Bank'),
 	BoardItem = mongoose.model('BoardItem'),
+	Group = mongoose.model('Group'),
 	_ = require('lodash');
 
 /**
@@ -30,6 +31,18 @@ function updateBankroll(groupId, userId, betAmount, callback) {
 	});
 }
 
+function getGroup(groupId, callback) {
+	Group.findById(groupId).exec(function (err, group) {
+		callback(group);
+	});
+}
+
+function findExistingWager(groupId, userId, boardItemId, callback) {
+	Wager.find({'group' : groupId, 'user' : userId, 'boardItem' : boardItemId}, function (err, wager) {
+		callback(wager);	
+	});
+}
+
 /**
  * Create a wager
  */
@@ -37,22 +50,32 @@ exports.create = function(req, res) {
 	var wager = new Wager(req.body);
 	wager.user = req.user;
 
-	updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
-		if (err) {
-			return res.status(400).send({
-				message: err
-			});
-		} else {
-			wager.save(function(err) {
+	findExistingWager(wager.group, wager.user, wager.boardItem, function(existingWager) {
+		if (existingWager.length !== 0)
+			return res.status(400).send({message: 'You are not allowed to place the same wager twice'});
+
+		getGroup(wager.group, function (group) {
+			if (wager.amount > group.maxBet)
+				return res.status(400).send({message: 'The max bet is: ' + group.maxBet});
+	
+			updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
 				if (err) {
 					return res.status(400).send({
-						message: errorHandler.getErrorMessage(err)
+						message: err
 					});
 				} else {
-					res.json(wager);
+					wager.save(function(err) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							});
+						} else {
+							res.json(wager);
+						}
+					});
 				}
 			});
-		}
+		});
 	});
 };
 
