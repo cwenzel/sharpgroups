@@ -22,6 +22,12 @@ var BoardItemSchema = new Schema({
 	juice: {
 		type: String
 	},
+	seq: {
+		type: Number
+	},
+	grouping: {
+		type: Number
+	},
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
