@@ -26,7 +26,6 @@
 			width: 100%;
 		}
 		.description {
-			width: 50%
 		}
 		.colorOne {
 			background-color: aliceblue;
@@ -37,35 +36,51 @@
 	</style>
 	<p id="loadingMessage">Loading...</p>
 	<div class="list-group" data-ng-controller="BoardItemsController" data-ng-init="find()">
-		<div data-ng-repeat="boardItem in boardItems" class="wrappingDiv">
-			<div class="secondWrappingDiv" ng-if="boardItem.grouping % 2 == 1">
-				<a data-ng-href="#!/boardItem/{{boardItem._id}}/{{group._id}}" class="list-group-item firstLinkStyle colorOne">
-					<small class="list-group-item-text">
-						<span data-ng-bind="boardItem.sport"></span>
-						on
-						<span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
-					</small>
-					<h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
-					<p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
-				</a>
-				<a class="btn btn-primary btn-lg secondLinkStyle" data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}">Place Wager</a>
+		<div data-ng-repeat="boardItem in boardItems">
+			<div ng-if="boardItem.grouping % 2 == 1" class="colorOne list-group-item">
+				<div style="display: table; width:100%">
+					<div style="display: table-row">
+						<div style="display:table-cell">
+							<a style="padding:0px; border:0px" data-ng-href="#!/boardItem/{{boardItem._id}}/{{group._id}}" class="colorOne list-group-item">
+								<small class="list-group-item-text">
+									<span data-ng-bind="boardItem.sport"></span>
+									on
+									<span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
+								</small>
+								<h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
+								<p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
+							</a>	
+						</div>
+						<div style="text-align: right; display:table-cell; vertical-align: middle">	
+							<a class="btn btn-primary btn-lg " data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}">Place Wager</a>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="secondWrappingDiv" ng-if="boardItem.grouping % 2 == 0">
-				<a data-ng-href="#!/boardItem/{{boardItem._id}}/{{group._id}}" class="list-group-item firstLinkStyle colorTwo">
-					<small class="list-group-item-text">
-						<span data-ng-bind="boardItem.sport"></span>
-						on
-						<span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
-					</small>
-					<h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
-					<p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
-				</a>
-				<a class="btn btn-primary btn-lg secondLinkStyle" data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}">Place Wager</a>
+			<div ng-if="boardItem.grouping % 2 == 0" class="colorTwo list-group-item">
+				<div style="display: table; width:100%">
+					<div style="display: table-row">
+						<div style="display:table-cell">
+							<a style="padding:0px; border:0px" data-ng-href="#!/boardItem/{{boardItem._id}}/{{group._id}}" class="colorTwo list-group-item">
+								<small class="list-group-item-text">
+									<span data-ng-bind="boardItem.sport"></span>
+									on
+									<span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
+								</small>
+								<h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
+								<p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
+							</a>	
+						</div>
+						<div style="text-align: right; display:table-cell; vertical-align: middle">	
+							<a class="btn btn-primary btn-lg " data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}">Place Wager</a>
+						</div>
+					</div>
+				</div>
+			</div>
 
-			</div>
 		</div>
-		<div class="alert alert-warning text-center" data-ng-if="boardItems.$resolved && !boardItems.length">
-			Sorry, there is no board for the time frame of your group.
-		</div>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="boardItems.$resolved && !boardItems.length">
+		Sorry, there is no board for the time frame of your group.
 	</div>
 </section>
