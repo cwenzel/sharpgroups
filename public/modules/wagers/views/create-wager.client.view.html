@@ -7,14 +7,14 @@
 			<p data-ng-bind="boardItem.group"></p>
 			<p data-ng-bind="boardItem.sport"></p>
 			<p data-ng-bind="boardItem.description"></p>
-			<p data-ng-bind="boardItem.juice"></p>
+			<p id="itemJuice" data-ng-bind="boardItem.juice"></p>
 		</div>
 		<form name="groupForm" class="form-horizontal" data-ng-submit="create()" novalidate>
 			<fieldset>
                                 <div class="form-group">
                                         <label class="control-label" for="amount">Wager amount</label>
                                         <div class="controls">
-                                                 <input name="amount" type="number" data-ng-model="amount" id="amount" class="form-control" placeholder="How many 'sharps' do you want to wager on this outcome?" required>
+                                                 <input ng-change="onAmountChanged()" name="amount" type="number" data-ng-model="amount" id="amount" class="form-control" placeholder="How many 'sharps' do you want to wager on this outcome?" required>
                                         </div>
                                 </div>
 				<div data-ng-controller="BoardItemsController" data-ng-init="findOne()">
@@ -23,6 +23,12 @@
 				<div data-ng-controller="GroupsController" data-ng-init="findOne()">
 					<input type="hidden" data-ng-bind="group._id" data-ng-model="groupId"/>
 					<h2>Your Bankroll: <span data-ng-bind="group.userBankroll"></span></h2>
+				</div>
+				<div id="wagerDetails">
+					<p>If you click submit and bet <span data-ng-bind="amount"></span> sharps</p>
+					<p>You may lose <span data-ng-bind="amount"></span> sharps</p>
+					<p>BUT you may win <span data-ng-bind="winnings"></span> sharps</p>
+					<p>AND your account will be credited <span data-ng-bind="pay"></span> sharps</p>
 				</div>
 
 				<div class="form-group">
