@@ -44,7 +44,10 @@ angular.element(document).ready(function() {
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('articles');
+
+ApplicationConfiguration.registerModule('boardItems');
+ApplicationConfiguration.registerModule('groups');
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -52,115 +55,95 @@ ApplicationConfiguration.registerModule('core');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+
+
+ApplicationConfiguration.registerModule('events');
+ApplicationConfiguration.registerModule('groups');
+ApplicationConfiguration.registerModule('boardItems');
+
+'use strict';
+
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('groups');
+
+'use strict';
+
+// Use Application configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
 'use strict';
 
-// Configuring the Articles module
-angular.module('articles').run(['Menus',
-	function(Menus) {
-		// Set top bar menu items
-		Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?');
-		Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles');
-		Menus.addSubMenuItem('topbar', 'articles', 'New Article', 'articles/create');
-	}
-]);
+// Use Applicaion configuration module to register a new module
+
+ApplicationConfiguration.registerModule('boardItems');
+ApplicationConfiguration.registerModule('groups');
+ApplicationConfiguration.registerModule('wagers');
+
 'use strict';
 
 // Setting up route
-angular.module('articles').config(['$stateProvider',
+angular.module('boardItems').config(['$stateProvider',
 	function($stateProvider) {
-		// Articles state routing
+		// boardItems state routing
 		$stateProvider.
-		state('listArticles', {
-			url: '/articles',
-			templateUrl: 'modules/articles/views/list-articles.client.view.html'
+		state('listBoardItems', {
+			url: '/boardItems/:groupId/:eventId',
+			templateUrl: 'modules/boardItems/views/list-boardItems.client.view.html'
 		}).
-		state('createArticle', {
-			url: '/articles/create',
-			templateUrl: 'modules/articles/views/create-article.client.view.html'
-		}).
-		state('viewArticle', {
-			url: '/articles/:articleId',
-			templateUrl: 'modules/articles/views/view-article.client.view.html'
-		}).
-		state('editArticle', {
-			url: '/articles/:articleId/edit',
-			templateUrl: 'modules/articles/views/edit-article.client.view.html'
+		state('viewBoardItem', {
+			url: '/boardItem/:boardItemId/:groupId',
+			templateUrl: 'modules/boardItems/views/view-boardItem.client.view.html'
 		});
 	}
 ]);
+
 'use strict';
 
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles',
-	function($scope, $stateParams, $location, Authentication, Articles) {
+angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'BoardItems',
+	function($scope, $stateParams, $location, Authentication, BoardItems) {
 		$scope.authentication = Authentication;
-
 		$scope.create = function() {
-			var article = new Articles({
-				title: this.title,
-				content: this.content
+			var boardItem = new BoardItems({
+				amount: this.amount,
 			});
-			article.$save(function(response) {
-				$location.path('articles/' + response._id);
+			boardItem.$save(function(response) {
+				$location.path('boardItems/' + response._id);
 
-				$scope.title = '';
-				$scope.content = '';
+				$scope.amount = 0;
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
 
-		$scope.remove = function(article) {
-			if (article) {
-				article.$remove();
 
-				for (var i in $scope.articles) {
-					if ($scope.articles[i] === article) {
-						$scope.articles.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.article.$remove(function() {
-					$location.path('articles');
-				});
-			}
-		};
-
-		$scope.update = function() {
-			var article = $scope.article;
-
-			article.$update(function() {
-				$location.path('articles/' + article._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
 
 		$scope.find = function() {
-			$scope.articles = Articles.query();
+			var eventId = document.URL.split('/')[6]; 
+			$scope.boardItems = BoardItems.query({'eventId' : eventId}, function() {
+				document.getElementById('loadingMessage').innerText='';
+			});
 		};
 
 		$scope.findOne = function() {
-			$scope.article = Articles.get({
-				articleId: $stateParams.articleId
+			$scope.boardItem = BoardItems.get({
+				boardItemId: $stateParams.boardItemId
 			});
 		};
+
 	}
 ]);
+
 'use strict';
 
-//Articles service used for communicating with the articles REST endpoints
-angular.module('articles').factory('Articles', ['$resource',
+//BoardItems service used for communicating with the boardItems REST endpoints
+angular.module('boardItems').factory('BoardItems', ['$resource',
 	function($resource) {
-		return $resource('articles/:articleId', {
-			articleId: '@_id'
+		return $resource('boardItems/:boardItemId', {
+			boardItemId: '@_id'
 		}, {
-			update: {
-				method: 'PUT'
-			}
 		});
 	}
 ]);
+
 'use strict';
 
 // Setting up route
@@ -370,6 +353,216 @@ angular.module('core').service('Menus', [
 		this.addMenu('topbar');
 	}
 ]);
+'use strict';
+
+// Setting up route
+angular.module('events').config(['$stateProvider',
+	function($stateProvider) {
+		// events state routing
+		$stateProvider.
+		state('listEvents', {
+			url: '/events/:groupId',
+			templateUrl: 'modules/events/views/list-events.client.view.html'
+		});
+	}
+]);
+
+'use strict';
+
+angular.module('events').controller('EventsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Events',
+	function($scope, $stateParams, $location, $http, Authentication, Events) {
+		$scope.authentication = Authentication;
+
+		$scope.find = function() {
+			$scope.events = Events.query();
+		};
+		$scope.findByGroup = function(groupId) {
+			groupId = document.URL.split('/')[5];
+			$http.get('/events/groupId/'+groupId).
+				  success(function(data, status, headers, config) {
+				  	$scope.events = data;
+				  }).
+				  error(function(data, status, headers, config) {
+				  });
+		};
+
+	}
+]);
+
+'use strict';
+
+//Events service used for communicating with the events REST endpoints
+angular.module('events').factory('Events', ['$resource',
+	function($resource) {
+		return $resource('events/:eventId', {
+			eventId: '@_id'
+		}, {
+		});
+	}
+]);
+
+'use strict';
+
+// Configuring the Groups module
+angular.module('groups').run(['Menus',
+	function(Menus) {
+		// Set top bar menu items
+		Menus.addMenuItem('topbar', 'Groups', 'groups', 'dropdown', '/groups(/create)?');
+		Menus.addSubMenuItem('topbar', 'groups', 'All Groups', 'groups');
+		Menus.addSubMenuItem('topbar', 'groups', 'New Group', 'groups/create');
+	}
+]);
+
+'use strict';
+
+// Setting up route
+angular.module('groups').config(['$stateProvider',
+	function($stateProvider) {
+		// Groups state routing
+		$stateProvider.
+		state('listGroups', {
+			url: '/groups',
+			templateUrl: 'modules/groups/views/list-groups.client.view.html'
+		}).
+		state('createGroup', {
+			url: '/groups/create',
+			templateUrl: 'modules/groups/views/create-group.client.view.html'
+		}).
+		state('viewGroup', {
+			url: '/groups/:groupId',
+			templateUrl: 'modules/groups/views/view-group.client.view.html'
+		}).
+		state('joinGroup', {
+			url: '/groups/join/:groupId',
+			templateUrl: 'modules/groups/views/view-group.client.view.html'
+		}).
+		state('editGroup', {
+			url: '/groups/:groupId/edit',
+			templateUrl: 'modules/groups/views/edit-group.client.view.html'
+		});
+	}
+]);
+
+'use strict';
+
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
+	function($scope, $stateParams, $location, $http, Authentication, Groups) {
+		$scope.authentication = Authentication;
+		$scope.create = function() {
+			// couldn't figure this out the angular way, so old school it is
+			var eventCheckboxes = document.getElementById('groupForm')['events'];
+			var checkedEvents = [];
+			for (var i in eventCheckboxes) {
+				var checkbox = eventCheckboxes[i];
+
+				if (checkbox.checked)
+					checkedEvents.push(checkbox.value);
+			}
+
+			var group = new Groups({
+				title: this.title,
+				description: this.description,
+                                endDate: this.endDate,
+                                startDate: this.startDate,
+                                bankroll: this.bankroll,
+				events: checkedEvents,
+				maxBet: this.maxBet
+			});
+			group.$save(function(response) {
+				$location.path('groups/' + response._id);
+
+				$scope.title = '';
+				$scope.description = '';
+                                $scope.bankroll = 0;
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.remove = function(group) {
+			if (group) {
+				group.$remove();
+
+				for (var i in $scope.groups) {
+					if ($scope.groups[i] === group) {
+						$scope.groups.splice(i, 1);
+					}
+				}
+			} else {
+				$scope.group.$remove(function() {
+					$location.path('groups');
+				});
+			}
+		};
+
+		$scope.update = function() {
+			var group = $scope.group;
+
+			group.$update(function() {
+				$location.path('groups/' + group._id);
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.find = function() {
+			$scope.groups = Groups.query();
+		};
+
+		$scope.findOne = function() {
+			$scope.group = Groups.get({
+				groupId: $stateParams.groupId
+			});
+		};
+
+                $scope.joinGroup = function(group) {
+			var group = $scope.group;
+			group.$joinGroup(function() {
+
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+                };
+
+		$scope.getPlayerCount = function() {
+			var group = $scope.group;
+			if (group && group.players)
+				return group.players.length;
+			return 0;
+		};
+
+		$scope.getEvents = function() {
+			$http.get('/events').
+				  success(function(data, status, headers, config) {
+				  	$scope.stockEvents = data;
+				  }).
+				  error(function(data, status, headers, config) {
+				  });
+		};
+	}
+]);
+
+'use strict';
+
+//Groups service used for communicating with the groups REST endpoints
+angular.module('groups').factory('Groups', ['$resource',
+	function($resource) {
+		return $resource('groups/:groupId', {
+			groupId: '@_id'
+		}, {
+			update: {
+				method: 'PUT'
+			},
+			joinGroup: {
+				method: 'PUT'
+			},
+			userInGroup: {
+				method: 'PUT'
+			},
+		});
+	}
+]);
+
 'use strict';
 
 // Config HTTP Error Handling
@@ -617,6 +810,109 @@ angular.module('users').factory('Users', ['$resource',
 			update: {
 				method: 'PUT'
 			}
+		});
+	}
+]);
+'use strict';
+
+// Setting up route
+angular.module('wagers').config(['$stateProvider',
+	function($stateProvider) {
+		// wagers state routing
+		$stateProvider.
+		state('listWagers', {
+			url: '/wagers/:groupId',
+			templateUrl: 'modules/wagers/views/list-wagers.client.view.html'
+		}).
+		state('createWager', {
+			url: '/wagers/create/:boardItemId/:groupId',
+			templateUrl: 'modules/wagers/views/create-wager.client.view.html'
+		}).
+		state('viewWager', {
+			url: '/wagers/:wagerId/:boardItemId/:groupId',
+			templateUrl: 'modules/wagers/views/view-wager.client.view.html'
+		});
+	}
+]);
+
+'use strict';
+
+angular.module('wagers').controller('WagersController', ['$scope', '$stateParams', '$location', 'Authentication', 'Wagers',
+	function($scope, $stateParams, $location, Authentication, Wagers) {
+		$scope.authentication = Authentication;
+		$scope.create = function() {
+			var wager = new Wagers({
+				amount: this.amount,
+				boardItem: $stateParams.boardItemId,
+				group: $stateParams.groupId,
+			});
+			wager.$save(function(response) {
+				$location.path('groups/' + $stateParams.groupId);
+
+				$scope.amount = 0;
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.find = function() {
+			$scope.wagers = Wagers.query({group : $stateParams.groupId});
+		};
+
+		$scope.findOne = function() {
+			$scope.wager = Wagers.get({
+				wagerId: $stateParams.wagerId
+			});
+		};
+
+		$scope.winnings = '';
+		$scope.pay = '';
+		$scope.onAmountChanged = function() {
+			if (this.amount > 0) {
+				var juice = document.getElementById('itemJuice').innerText;
+				var slashPosition = juice.indexOf('/');
+	
+				if (juice === 'EVEN') {
+					winnings = this.amount;
+				}
+				else if (slashPosition > 0) {
+					var theOdds = parseFloat(juice);
+					$scope.winnings = this.amount * theOdds;
+				}
+				else if (juice[0] == '+') {
+					juice = parseInt(juice);
+					var conversion = juice / 100;
+					$scope.winnings = conversion * this.amount;
+				}
+				else {
+					juice = parseInt(juice.substring(1));
+					var conversion = 1 / (juice / 100);
+					$scope.winnings = conversion * this.amount;
+				}
+	
+				$scope.pay =  this.amount + $scope.winnings;
+				
+				$scope.pay = parseFloat($scope.pay).toFixed(2);
+				$scope.winnings = parseFloat($scope.winnings).toFixed(2);
+			}
+		}
+	}
+]);
+
+'use strict';
+
+//Wagers service used for communicating with the wagers REST endpoints
+angular.module('wagers').factory('Wagers', ['$resource',
+	function($resource) {
+		return $resource('wagers/:wagerId', {
+			wagerId: '@_id'
+		}, {
+			update: {
+				method: 'PUT'
+			},
+			placeWager: {
+				method: 'PUT'
+			},
 		});
 	}
 ]);
