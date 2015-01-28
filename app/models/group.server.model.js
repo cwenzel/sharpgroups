@@ -7,16 +7,21 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 
+var userIsInGroup = false;
+var userBankroll = 0;
+
 function startDateValidator(startDate) {
+	if (this.userInGroup === true)
+		return true;
+
 	if (this.endDate < startDate)
 		return false;
 
 	var startDateObject = new Date(startDate.toString());
+	console.log(this.startDate);
 	console.log(startDate);
-	console.log(startDateObject.toUTCString());
 	
 	var currentDate = new Date();
-	console.log(currentDate.toUTCString());
 
 	if (startDateObject < currentDate)
 		return false;
@@ -87,14 +92,12 @@ var GroupSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-var userIsInGroup = false;
 GroupSchema.virtual('userInGroup').get(function () {
 	return userIsInGroup;
 }).set(function (val) {
 	userIsInGroup = val;
 });
 
-var userBankroll = 0;
 GroupSchema.virtual('userBankroll').get(function() {
 	return userBankroll;
 }).set(function (val) {
