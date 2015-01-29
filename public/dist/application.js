@@ -870,10 +870,11 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 		$scope.onAmountChanged = function() {
 			if (this.amount > 0) {
 				var juice = document.getElementById('itemJuice').innerText;
+				juice = juice.trim();
 				var slashPosition = juice.indexOf('/');
 	
 				if (juice === 'EVEN') {
-					winnings = this.amount;
+					$scope.winnings = this.amount;
 				}
 				else if (slashPosition > 0) {
 					var theOdds = parseFloat(juice);
@@ -894,6 +895,10 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				
 				$scope.pay = parseFloat($scope.pay).toFixed(2);
 				$scope.winnings = parseFloat($scope.winnings).toFixed(2);
+			}
+			else {
+				$scope.pay = '';
+				$scope.winnings = '';
 			}
 		}
 	}
