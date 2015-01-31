@@ -43,6 +43,13 @@ function findExistingWager(groupId, userId, boardItemId, callback) {
 	});
 }
 
+function getBoardItems(boardItemIds, callback) {
+	BoardItem.find(boardItemIds).exec(function(err, boardItems) {
+		callback(boardItems);
+	});
+}
+
+
 /**
  * Create a wager
  */
@@ -89,11 +96,6 @@ exports.read = function(req, res) {
 	res.json(req.wager);
 };
 
-function getBoardItems(boardItemIds, callback) {
-	BoardItem.find(boardItemIds).exec(function(err, boardItems) {
-		callback(boardItems);
-	});
-}
 
 /**
  * List of wagers

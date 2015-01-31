@@ -1,4 +1,5 @@
 <section data-ng-controller="GroupsController" data-ng-init="findOne()">
+<div data-ng-if="authentication.user._id != null">
 	<div class="page-header">
 		<h1 data-ng-bind="group.title"></h1>
 	</div>
@@ -54,4 +55,9 @@
 		<a class="btn btn-primary btn-lg" href="/#!/events/{{group._id}}"}>Place a wager</a>
 		<a class="btn btn-primary btn-lg" href="/#!/wagers/{{group._id}}"}>View your wagers</a>
 	</div>
+</div>
+<div data-ng-if="authentication.user._id == null">
+	Sign in to view/join group
+</div>
+
 </section>

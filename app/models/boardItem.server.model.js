@@ -28,6 +28,9 @@ var BoardItemSchema = new Schema({
 	grouping: {
 		type: Number
 	},
+	expired: {
+		type: Boolean
+	}
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
