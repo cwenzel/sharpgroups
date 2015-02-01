@@ -94,5 +94,16 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				  error(function(data, status, headers, config) {
 				  });
 		};
+
+		$scope.getGroupUsersAndBankrolls = function() {
+			var groupId = document.location.href.split('/')[5];
+			$http.get('/groups/getGroupUsersAndBankrolls/' + groupId).
+				  success(function(data, status, headers, config) {
+				  	$scope.items = data;
+				  }).
+				  error(function(data, status, headers, config) {
+				  });
+
+		};
 	}
 ]);

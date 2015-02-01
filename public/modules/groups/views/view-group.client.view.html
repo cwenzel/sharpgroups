@@ -54,6 +54,43 @@
 		<h2>Your Bankroll: <span data-ng-bind="group.userBankroll"></span></h2>
 		<a class="btn btn-primary btn-lg" href="/#!/events/{{group._id}}"}>Place a wager</a>
 		<a class="btn btn-primary btn-lg" href="/#!/wagers/{{group._id}}"}>View your wagers</a>
+
+		<div class="page-header">
+			<h1>Leaderboard</h1>
+		</div>
+		<div class="list-group" data-ng-init="getGroupUsersAndBankrolls()">
+			<div class="list-group-item" style="display: table; width: 100%">
+					
+				<div style="display: table-row; font-weight: bold; width: 100%">
+					<div style="display: table-cell; width: 33%">
+						<p class="list-group-item-text">Gambler</p>
+					</div>
+					<div style="display: table-cell; width: 34%">
+						<p class="list-group-item-text"># of sharps</p>
+					</div>
+					<div style="display: table-cell; width: 33%">
+						<p class="list-group-item-text">Percentage of pot</p>
+					</div>
+				</div>
+
+				<div data-ng-repeat="item in items" style="display: table-row; width: 100%">
+					<div style="display: table-cell; width: 33%">
+						<p class="list-group-item-text" data-ng-bind="item.displayName"></p>
+					</div>
+					<div style="display: table-cell; width: 34%">
+						<p class="list-group-item-text" data-ng-bind="item.amount"></p>
+					</div>
+					<div style="display: table-cell; width: 33%">
+						<p class="list-group-item-text" data-ng-bind="item.percentage"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+	</div>
+
 	</div>
 </div>
 <div data-ng-if="authentication.user._id == null">

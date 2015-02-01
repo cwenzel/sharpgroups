@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Group = mongoose.model('Group'),
 	Bank = mongoose.model('Bank'),
+	User = mongoose.model('User'),
 	_ = require('lodash');
 
 /**
@@ -36,7 +37,31 @@ function getUserBankrollAmount(groupId, userId, callback) {
 	});
 }
 
+function getUserBankInfo(userQueryArray, callback) {
+	User.find({'_id' : {'$in' : userQueryArray}}).exec(function (err, users) {
+		callback(users);
+	});
+}
 
+exports.getGroupUsersAndBankrolls = function(req, res) {
+	var output = [];
+	Bank.find({'group' : req.group._id}).lean().exec(function (err, banks) {
+		var userQueryArray = [];
+		var total = 0;
+		for(var b in banks) {
+			userQueryArray.push(banks[b].user);
+			total += banks[b].amount;
+		}
+
+		getUserBankInfo(userQueryArray, function (users) {
+			for (var i in users) {
+				var percentage = parseFloat(banks[i].amount/total).toFixed(2);
+				output.push({'amount' : banks[i].amount, 'displayName' : users[i].displayName, 'percentage' : percentage});
+			}
+			res.json(output);
+		});
+	});
+}
 
 /**
  * Show the current group
