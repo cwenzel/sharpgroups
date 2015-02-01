@@ -55,7 +55,7 @@ exports.getGroupUsersAndBankrolls = function(req, res) {
 
 		getUserBankInfo(userQueryArray, function (users) {
 			for (var i in users) {
-				var percentage = parseFloat(banks[i].amount/total).toFixed(2);
+				var percentage = parseFloat(banks[i].amount/total).toFixed(2) * 100;
 				output.push({'amount' : banks[i].amount, 'displayName' : users[i].displayName, 'percentage' : percentage});
 			}
 			res.json(output);
