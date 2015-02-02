@@ -3,17 +3,50 @@
 		<h1><span data-ng-controller="WagersController" data-ng-bind="findPublicUserName()"></span> wagers for <span data-ng-bind="group.title"></span></h1>
 	</div>
 	<h2>Click on a wager below to inspect it.</h2>
+	<style type="text/css">
+/*		.losingBet {
+			background-color : red;
+		}
+		.winningBet{
+			background-color: green;
+		}
+		.winningBetChild{
+			color: white;
+		}
+*/
+		.winningBetInfo {
+			color: green;
+		}
+	</style>
 	<div class="list-group" data-ng-controller="WagersController" data-ng-init="findPublic()">
-		<a data-ng-repeat="wager in wagers" data-ng-href="#!/wagers/{{wager._id}}/{{wager.boardItem._id}}/{{wager.groupId}}" class="list-group-item">
-			<small class="list-group-item-text">
-				<span data-ng-bind="wager.boardItem.sport"></span>
-				on
-				<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
-			</small>
-			<h4 class="list-group-item-heading"><span data-ng-bind="wager.amount"></span> sharps</h4>
-			<p class="list-group-item-text" data-ng-bind="wager.boardItem.description"></p>
-			<p class="list-group-item-text" data-ng-bind="wager.boardItem.juice"></p>
-		</a>
+		<div data-ng-repeat="wager in wagers">
+			<div data-ng-if="!wager.boardItem.winner">
+				<div class="list-group-item losingBet">
+					<small class="list-group-item-text">
+						<span data-ng-bind="wager.boardItem.sport"></span>
+						on
+						<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
+					</small>
+					<h4 class="list-group-item-heading"><span data-ng-bind="wager.amount"></span> sharps</h4>
+					<p class="list-group-item-text" data-ng-bind="wager.boardItem.description"></p>
+					<p class="list-group-item-text" data-ng-bind="wager.boardItem.juice"></p>
+				</div>
+			</div>
+			<div data-ng-if="wager.boardItem.winner">
+				<div class="list-group-item winningBet">
+					<small class="list-group-item-text winningBetChild">
+						<span data-ng-bind="wager.boardItem.sport"></span>
+						on
+						<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
+					</small>
+					<h4 class="list-group-item-heading winningBetChild"><span data-ng-bind="wager.amount"></span> sharps</h4>
+					<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.description"></p>
+					<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.juice"></p>
+					<h3 class="winningBetInfo">PAID: <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></h3>
+				</div>
+			</div>
+
+		</div>
 	</div>
 	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
 		This person has not made any wagers in this group.

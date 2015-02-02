@@ -36,36 +36,51 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 			});
 		};
 
+		function calcWinnings (amount, juice) {
+			juice = juice.toString();
+			juice = juice.trim();
+			var slashPosition = juice.indexOf('/');
+			var winnings = 0;
+
+			if (juice === 'EVEN') {
+				winnings = amount;
+			}
+			else if (slashPosition > 0) {
+				var numerator = juice.split('/')[0];
+				var denominator = juice.split('/')[1];
+				var theOdds = parseFloat(numerator / denominator);
+				console.log(theOdds);
+				winnings = amount * theOdds;
+			}
+			else if (juice[0] == '+') {
+				juice = parseInt(juice);
+				var conversion = juice / 100;
+				winnings = conversion * amount;
+			}
+			else {
+				juice = parseInt(juice.substring(1));
+				var conversion = 1 / (juice / 100);
+				winnings = conversion * amount;
+			}
+
+			var pay =  amount + winnings;
+			pay = parseFloat(pay).toFixed(2);
+			winnings = parseFloat(winnings).toFixed(2);
+	
+			return {'pay' : pay, 'winnings' : winnings};
+		}
+		$scope.calcWinnings = function(amount, juice) {
+			return calcWinnings(amount, juice).pay;
+		};
+
 		$scope.winnings = '';
 		$scope.pay = '';
 		$scope.onAmountChanged = function() {
 			if (this.amount > 0) {
 				var juice = document.getElementById('itemJuice').innerText;
-				juice = juice.trim();
-				var slashPosition = juice.indexOf('/');
-	
-				if (juice === 'EVEN') {
-					$scope.winnings = this.amount;
-				}
-				else if (slashPosition > 0) {
-					var theOdds = parseFloat(juice);
-					$scope.winnings = this.amount * theOdds;
-				}
-				else if (juice[0] == '+') {
-					juice = parseInt(juice);
-					var conversion = juice / 100;
-					$scope.winnings = conversion * this.amount;
-				}
-				else {
-					juice = parseInt(juice.substring(1));
-					var conversion = 1 / (juice / 100);
-					$scope.winnings = conversion * this.amount;
-				}
-	
-				$scope.pay =  this.amount + $scope.winnings;
-				
-				$scope.pay = parseFloat($scope.pay).toFixed(2);
-				$scope.winnings = parseFloat($scope.winnings).toFixed(2);
+				var ret = calcWinnings(this.amount, juice)	
+				$scope.pay = ret.pay;
+				$scope.winnings = ret.winnings;
 			}
 			else {
 				$scope.pay = '';
