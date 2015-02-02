@@ -43,8 +43,8 @@ function getUserBankInfo(userQueryArray, callback) {
 	});
 }
 
-
-Wager.find({"group" : "54c56f9a2c69f6f732d3f0df" }, function (err, wagers) {
+/*
+Wager.find({"group" : "54c8418638a5d7ad22adb062" }, function (err, wagers) {
 	var boardItemIds = [];
 	for (var i in wagers) {
 		boardItemIds.push(wagers[i].boardItem);
@@ -52,4 +52,52 @@ Wager.find({"group" : "54c56f9a2c69f6f732d3f0df" }, function (err, wagers) {
 	getBoardItems(boardItemIds, function (boardItems) {
 		console.log(boardItems);
 	});
+});*/
+
+
+BoardItem.find({"winner" : true}, function (err, boardItems) {
+	for (var i in boardItems) {	
+		Wager.find({'boardItem' : boardItems[i]._id}, function (err, wagers) {
+			for (var j in wagers) {
+				var juice = '';
+				for (var x in boardItems) {
+					if (boardItems[x]._id.toString() == wagers[j].boardItem.toString()) {
+						juice = boardItems[x].juice;
+					}
+				}
+				juice = juice.trim();
+				var slashPosition = juice.indexOf('/');
+				var winnings = 0;
+	
+				if (juice === 'EVEN') {
+					winnings = wagers[j].amount;
+				}
+				else if (slashPosition > 0) {
+					var numerator = juice.split('/')[0];
+					var denominator = juice.split('/')[1];
+					var theOdds = parseFloat(numerator / denominator);
+					console.log(theOdds);
+					winnings = wagers[j].amount * theOdds;
+				}
+				else if (juice[0] == '+') {
+					juice = parseInt(juice);
+					var conversion = juice / 100;
+					winnings = conversion * wagers[j].amount;
+				}
+				else {
+					juice = parseInt(juice.substring(1));
+					var conversion = 1 / (juice / 100);
+					winnings = conversion * wagers[j].amount;
+				}
+	
+				var pay =  wagers[j].amount + winnings;
+				if (wagers[j].user.toString() == "54cd4469386e7cc47193d945")
+					console.log(wagers[j].boardItem +' : '  + pay);
+
+//				Bank.update({'user': wagers[j].user, 'group' : '54c8418638a5d7ad22adb062'}, {$inc : {'amount' : pay}}, function (err) {
+//					console.log(err);
+//				});
+			}
+		});
+	}
 });
