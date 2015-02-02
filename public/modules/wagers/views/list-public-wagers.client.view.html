@@ -1,6 +1,6 @@
 <section data-ng-controller="GroupsController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1>FIXMEs wagers for <span data-ng-bind="group.title"></span></h1>
+		<h1><span data-ng-controller="WagersController" data-ng-bind="findPublicUserName()"></span> wagers for <span data-ng-bind="group.title"></span></h1>
 	</div>
 	<h2>Click on a wager below to inspect it.</h2>
 	<div class="list-group" data-ng-controller="WagersController" data-ng-init="findPublic()">
