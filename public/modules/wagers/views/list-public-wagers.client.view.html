@@ -1,0 +1,21 @@
+<section data-ng-controller="GroupsController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1>FIXMEs wagers for <span data-ng-bind="group.title"></span></h1>
+	</div>
+	<h2>Click on a wager below to inspect it.</h2>
+	<div class="list-group" data-ng-controller="WagersController" data-ng-init="findPublic()">
+		<a data-ng-repeat="wager in wagers" data-ng-href="#!/wagers/{{wager._id}}/{{wager.boardItem._id}}/{{wager.groupId}}" class="list-group-item">
+			<small class="list-group-item-text">
+				<span data-ng-bind="wager.boardItem.sport"></span>
+				on
+				<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
+			</small>
+			<h4 class="list-group-item-heading"><span data-ng-bind="wager.amount"></span> sharps</h4>
+			<p class="list-group-item-text" data-ng-bind="wager.boardItem.description"></p>
+			<p class="list-group-item-text" data-ng-bind="wager.boardItem.juice"></p>
+		</a>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
+		This person has not made any wagers in this group.
+	</div>
+</section>

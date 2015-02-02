@@ -22,6 +22,10 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 			$scope.wagers = Wagers.query({group : $stateParams.groupId});
 		};
 
+		$scope.findPublic = function() {
+			$scope.wagers = Wagers.query({group : $stateParams.groupId, publicUserId : $stateParams.userId});
+		};
+
 		$scope.findOne = function() {
 			$scope.wager = Wagers.get({
 				wagerId: $stateParams.wagerId

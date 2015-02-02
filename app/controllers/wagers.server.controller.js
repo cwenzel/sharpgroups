@@ -101,7 +101,9 @@ exports.read = function(req, res) {
  * List of wagers
  */
 exports.list = function(req, res) {
-	Wager.find({'user' : req.user, 'group' : req.query.group}, function (err, wagers) {
+	var user = req.query.publicUserId ? req.query.publicUserId : req.user;
+		
+	Wager.find({'user' : user, 'group' : req.query.group}, function (err, wagers) {
 		var boardItemQueryArray = [];
 		for (var i in wagers) {
 			boardItemQueryArray.push({'_id' : wagers[i].boardItem});
