@@ -55,9 +55,14 @@ exports.getGroupUsersAndBankrolls = function(req, res) {
 
 		getUserBankInfo(userQueryArray, function (users) {
 			for (var i in users) {
-				var percentage = parseFloat(banks[i].amount/total).toFixed(2) * 100;
-				output.push({'userId' : users[i]._id, 'amount' : banks[i].amount, 'displayName' : users[i].displayName, 'percentage' : percentage});
+				var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
+				output.push({'userId' : users[i]._id, 'amount' : parseFloat(banks[i].amount).toFixed(2), 'displayName' : users[i].displayName, 'percentage' : percentage});
 			}
+			
+			output.sort(function (a, b) {
+				return parseFloat(b.amount) - parseFloat(a.amount);
+			});
+
 			res.json(output);
 		});
 	});

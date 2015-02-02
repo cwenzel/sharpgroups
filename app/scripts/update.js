@@ -76,7 +76,6 @@ BoardItem.find({"winner" : true}, function (err, boardItems) {
 					var numerator = juice.split('/')[0];
 					var denominator = juice.split('/')[1];
 					var theOdds = parseFloat(numerator / denominator);
-					console.log(theOdds);
 					winnings = wagers[j].amount * theOdds;
 				}
 				else if (juice[0] == '+') {
@@ -91,9 +90,8 @@ BoardItem.find({"winner" : true}, function (err, boardItems) {
 				}
 	
 				var pay =  wagers[j].amount + winnings;
-				if (wagers[j].user.toString() == "54cd4469386e7cc47193d945")
-					console.log(wagers[j].boardItem +' : '  + pay);
-
+				pay = parseFloat(pay).toFixed(2);
+				console.log(wagers[j].boardItem + ' : ' + pay);
 //				Bank.update({'user': wagers[j].user, 'group' : '54c8418638a5d7ad22adb062'}, {$inc : {'amount' : pay}}, function (err) {
 //					console.log(err);
 //				});
