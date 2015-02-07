@@ -41,7 +41,9 @@ exports.insertBoardItems = function (rawCsv) {
 function ranTodaysBoardItems(dateString, callback) {
 	var seqZero = parseInt(dateString) * 10;
 	seqZero++;
-	BoardItem.find({'seq' : dateString}).exec(function (err, boardItem) {
+	BoardItem.find({'seq' : seqZero}).exec(function (err, boardItem) {
+		if (err)
+			console.log('err ' + err);
 		if (boardItem && boardItem.length > 0)
 			callback(true);
 		else
@@ -68,6 +70,11 @@ function runToday(rows, dateString) {
 			if (oddEntry) {
 				if (row.length == 13 && lastRow.length == 13) {
 					eventDate = lastRow[0] + row[0];
+					var d = lastRow[0].split('/');
+					var t = row[0].split(':');
+					if (t[1].indexOf("PM") > -1)
+						t[0] = parseInt(t[0]) + 11;
+					eventDate = '20' + d[2] + '-' + d[0] + '-' + d[1] + 'T' + t[0] + ':' + t[1].charAt(0) + t[1].charAt(1) + ':00.000Z';
 					var team1 = lastRow[2];
 					var team2 = row[2];
 				 	var spread1 = lastRow[4];
@@ -122,6 +129,7 @@ function runToday(rows, dateString) {
 function processRow (obj) {
 	obj.expired = false;
 	obj.winner = false;
+
 	var boardItem = new BoardItem(obj);
 
 	boardItem.save(function(err) {
