@@ -95,13 +95,26 @@ function runToday(rows, dateString) {
 						seq++;
 					}
 					if (spread1.length > 0) {
+						var juiceOne = '-110';
+						var juiceTwo = '-110';
+						// indicates alternate juice
+						if (spread1.charAt(spread1.length - 1) === ')') {
+							spread1 = spread1.split('(');
+							juiceOne = spread1[1].substring(0, spread1[1].length - 1);
+							spread1 = spread1[0];
+
+							spread2 = spread2.split('(');
+							juiceTwo = spread2[1].substring(0, spread2[1].length - 1);
+							spread2 = spread2[0];
+						}
+						
 						// SPREAD ONE
 						description = team1 + ' ' + spread1;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
 						seq++;
 						// SPREAD TWO
 						description = team2 + ' ' + spread2;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : juiceTwo, 'eventDate' : eventDate});
 						seq++;
 					}
 					if (total > 0) {
