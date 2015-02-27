@@ -836,7 +836,7 @@ angular.module('wagers').config(['$stateProvider',
 			templateUrl: 'modules/wagers/views/list-wagers.client.view.html'
 		}).
 		state('listPublicWagers', {
-			url: '/wagers/:groupId/:userId/:displayName',
+			url: '/wagers/leaderboard//:groupId/:userId/:displayName',
 			templateUrl: 'modules/wagers/views/list-public-wagers.client.view.html'
 		}).
 		state('createWager', {
