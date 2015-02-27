@@ -57,7 +57,7 @@ function runToday(rows, dateString) {
 	var lastRow = {};
 	var seq = 1;
 	var grouping = 1;
-
+console.log('running for ' + dateString);
 	for (var i in rows) {
 		var row = rows[i].split(',');
 		var date = rows[i].split('/');
@@ -85,6 +85,10 @@ function runToday(rows, dateString) {
 					var thisGrouping = parseInt(dateString + grouping);
 					var thisSeq = parseInt(dateString + seq);
 					if (moneyLine1Juice.trim().length > 0) {
+						if (parseInt(moneyLine1Juice) > 0)
+							moneyLine1Juice = '+' + moneyLine1Juice;
+						else if (parseInt(moneyLine2Juice) > 0)
+							moneyLine2Juice = '+' + moneyLine2Juice;
 						// ML ONE
 						var description = team1 + ' Moneyline';
 						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
@@ -135,14 +139,14 @@ function runToday(rows, dateString) {
 			lastRow = row;
 		}
 	}
+	console.log('Its done');
 }
 
 //Date, #, Team, Open, Spread, ML, Total, Bet#, Spread%, ML%, Total%, Exotics
 //{"seq" : 22, "grouping" : 11, "sport" : "NFL", "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
 function processRow (obj) {
-	obj.expired = false;
 	obj.winner = false;
-
+	obj.processed = false;
 	var boardItem = new BoardItem(obj);
 
 	boardItem.save(function(err) {
