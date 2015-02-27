@@ -28,7 +28,7 @@ var BoardItemSchema = new Schema({
 	grouping: {
 		type: Number
 	},
-	expired: {
+	processed: {
 		type: Boolean
 	},
 	winner: {
