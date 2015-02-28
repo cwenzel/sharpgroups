@@ -47,39 +47,42 @@ function handleBoardItem(boardItem, score) {
 	// 6 possible descriptions
 	var away = scoreLineNameConverter(score.awayTeamName);
 	var home = scoreLineNameConverter(score.homeTeamName);
+	boardItem.processed = true;
 	switch (boardItem.type) {
 		case 'awayml' :
 			if (score.awayTeamScore > score.homeTeamScore)
-				console.log('winner for awayml');
+				boardItem.winner = true;
 			break;
 		case 'homeml' :
 			if (score.homeTeamScore > score.awayTeamScore)
-				console.log('winner for homeml');
+				boardItem.winner = true;
 			break;
 		case 'awayspread' :
 			var spread = parseFloat(boardItem.description.replace(away, ''));
 			if (score.awayTeamScore + spread > score.homeTeamScore)
-				console.log('winner for awayspread');
+				boardItem.winner = true;
 			break;
 		case 'homespread' :
 			var spread = parseFloat(boardItem.description.replace(home, ''));
 			if (score.homeTeamScore + spread > score.awayTeamScore)
-				console.log('winner for homespread');
+				boardItem.winner = true;
 			break;
 		case 'over' :
 			var overUnder = parseFloat(boardItem.description.replace(away + '-' + home + ' Over:', ''));
 			if (score.awayTeamScore + score.homeTeamScore > overUnder)
-				console.log('winner for over');
+				boardItem.winner = true;
 			break;
 		case 'under' :
 			var overUnder = parseFloat(boardItem.description.replace(away + '-' + home + ' Under:', ''));
 			if (score.awayTeamScore + score.homeTeamScore < overUnder)
-				console.log('winner for under');
+				boardItem.winner = true;
 			break;
 		default :
+			boardItem.processed = false;
 //			console.log('No type information can not handle board item');
 			break;
-	}	
+	}
+	boardItem.save();
 }
 
 function scoreLineNameConverter(teamName) {
