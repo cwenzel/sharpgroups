@@ -34,10 +34,10 @@ var BoardItemSchema = new Schema({
 	winner: {
 		type: Boolean
 	},
-	team1: {
+	teams: [{
 		type: String
-	},
-	team2: {
+	}],
+	type: {
 		type: String
 	}
 }, {
