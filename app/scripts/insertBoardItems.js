@@ -112,7 +112,7 @@ console.log('running for ' + dateString);
 							spread2 = spread2[0];
 						}
 						// do not enter empty spreads anymore, a pk must be present
-						if (spreadOne.length > 0 && spreadOne != ' ') {
+						if (spread1.length > 0 && spread1 != ' ') {
 							// SPREAD ONE
 							description = team1 + ' ' + spread1;
 							processRow({'type' : 'awayspread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
