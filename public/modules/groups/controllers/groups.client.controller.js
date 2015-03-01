@@ -105,5 +105,12 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				  });
 
 		};
+
+		$scope.groupExpired = function(group) {
+			var expireDate = new Date(group.endDate);
+			if (expireDate < new Date())
+				return true;
+			return false;
+		};
 	}
 ]);

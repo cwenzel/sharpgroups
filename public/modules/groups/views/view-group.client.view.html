@@ -47,12 +47,12 @@
 	</small>
 	<p class="lead" data-ng-bind="group.description"></p>
         <div data-ng-show="!group.userInGroup">
-		<button class="btn btn-primary btn-lg" ng-click="joinGroup()">Join sharpgroup</button>
+		<button class="btn btn-primary btn-lg" ng-click="joinGroup()" ng-if="!groupExpired(group)">Join sharpgroup</button>
 	</div>
 	<div data-ng-show="group.userInGroup">
 		<p>You are a member of this group.</p>
 		<h2>Your Bankroll: <span data-ng-bind="group.userBankroll"></span></h2>
-		<a class="btn btn-primary btn-lg" href="/#!/events/{{group._id}}"}>Place a wager</a>
+		<a class="btn btn-primary btn-lg" ng-if="!groupExpired(group)" href="/#!/events/{{group._id}}"}>Place a wager</a>
 		<a class="btn btn-primary btn-lg" href="/#!/wagers/{{group._id}}"}>View your wagers</a>
 
 		<div class="page-header">
