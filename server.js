@@ -5,13 +5,13 @@
 var init = require('./config/init')(),
 	config = require('./config/config'),
 	mongoose = require('mongoose'),
+	schedule = require('node-schedule'),
 	chalk = require('chalk');
 
 /**
  * Main application entry file.
  * Please note that the order of loading is important.
  */
-
 // Bootstrap db connection
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
@@ -47,3 +47,27 @@ if (process.env.NODE_ENV === 'secure') {
 	console.log(chalk.green('HTTPs:\t\t\t\ton'));
 }
 console.log('--');
+
+
+var rule = new schedule.RecurrenceRule();
+rule.hour = 2;
+rule.minute = 1;
+ 
+schedule.scheduleJob(rule, function(){
+	require('./app/scripts/scrapeBoardItems');
+});
+
+rule = new schedule.RecurrenceRule();
+rule.hour = 2;
+rule.minute = 11;
+schedule.scheduleJob(rule, function(){
+	require('./app/scripts/scrapeResults');
+});
+
+
+rule = new schedule.RecurrenceRule();
+rule.hour = 2;
+rule.minute = 21;
+schedule.scheduleJob(rule, function(){
+	require('./app/scripts/updateWagers');
+});
