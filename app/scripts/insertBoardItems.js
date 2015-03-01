@@ -91,11 +91,11 @@ console.log('running for ' + dateString);
 							moneyLine2Juice = '+' + moneyLine2Juice;
 						// ML ONE
 						var description = team1 + ' Moneyline';
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
+						processRow({'type' : 'awayml', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
 						seq++;
 						// ML TWO
 						description = team2 + ' Moneyline';
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine2Juice, 'eventDate' : eventDate});
+						processRow({'type' : 'homeml', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine2Juice, 'eventDate' : eventDate});
 						seq++;
 					}
 					if (spread1.length > 0) {
@@ -111,24 +111,26 @@ console.log('running for ' + dateString);
 							juiceTwo = spread2[1].substring(0, spread2[1].length - 1);
 							spread2 = spread2[0];
 						}
-						
-						// SPREAD ONE
-						description = team1 + ' ' + spread1;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
-						seq++;
-						// SPREAD TWO
-						description = team2 + ' ' + spread2;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : juiceTwo, 'eventDate' : eventDate});
-						seq++;
+						// do not enter empty spreads anymore, a pk must be present
+						if (spread1.length > 0 && spread1 != ' ') {
+							// SPREAD ONE
+							description = team1 + ' ' + spread1;
+							processRow({'type' : 'awayspread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
+							seq++;
+							// SPREAD TWO
+							description = team2 + ' ' + spread2;
+							processRow({'type' : 'homespread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : juiceTwo, 'eventDate' : eventDate});
+							seq++;
+						}
 					}
 					if (total > 0) {
 						// OVER
 						description = team1 + '-' + team2 + ' Over: ' + total;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'over' : true,  'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'type' : 'over', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'over' : true,  'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
 						seq++;
 						// UNDER
 						description = team1 + '-' + team2 + ' Under: ' + total;
-						processRow({'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'under' : true, 'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'type' : 'under', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'under' : true, 'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
 						seq++;
 					}
 

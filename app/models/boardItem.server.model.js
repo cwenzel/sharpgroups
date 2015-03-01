@@ -33,6 +33,12 @@ var BoardItemSchema = new Schema({
 	},
 	winner: {
 		type: Boolean
+	},
+	teams: [{
+		type: String
+	}],
+	type: {
+		type: String
 	}
 }, {
     toObject: { virtuals: true },
