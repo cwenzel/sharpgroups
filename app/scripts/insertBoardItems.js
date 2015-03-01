@@ -15,12 +15,14 @@ var config = {db: {
 		}
 	}};
 
+if (false) {
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
 		console.error(chalk.red('Could not connect to MongoDB!'));
 		console.log(chalk.red(err));
 	}
 });
+}
 
 exports.insertBoardItems = function (rawCsv) {
 	var rows = rawCsv.split('\r\n');
@@ -74,7 +76,10 @@ console.log('running for ' + dateString);
 					var t = row[0].split(':');
 					if (t[1].indexOf("PM") > -1)
 						t[0] = parseInt(t[0]) + 11;
-					eventDate = '20' + d[2] + '-' + d[0] + '-' + d[1] + 'T' + t[0] + ':' + t[1].charAt(0) + t[1].charAt(1) + ':00.000Z';
+					var jsDate = new Date('20' + d[2], d[0], d[1], t[0], t[1].charAt(0) + t[1].charAt(1), 0, 0);
+					//eventDate = '20' + d[2] + '-' + d[0] + '-' + d[1] + 'T' + t[0] + ':' + t[1].charAt(0) + t[1].charAt(1) + ':00.000Z';
+					jsDate.setHours(0, d.getTimezoneOffset(), 0, 0);
+					eventDate = jsDate.toISOString();
 					var team1 = lastRow[2];
 					var team2 = row[2];
 				 	var spread1 = lastRow[4];
