@@ -17,19 +17,21 @@ var config = {db: {
 		}
 	}};
 
+if (false) {
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
 		console.error(chalk.red('Could not connect to MongoDB!'));
 		console.log(chalk.red(err));
 	}
 });
+}
 
 Score.find({}).exec(function (err, scores) {
 	handleScoresAndBoardItems(scores);
 });
 
 function handleScoresAndBoardItems(scores) {
-        for (var s in scores) {
+	for (var s in scores) {
 		findBoardItemsAndUpdate(scores[s]);
 	}
 }
@@ -147,6 +149,8 @@ function scoreLineNameConverter(teamName) {
 	switch (teamName) {
 		case 'Florida St' :
 			return 'Florida St.';
+		case 'Michigan St' :
+			return 'Michigan St.';
 	}
 	return teamName;
 }
