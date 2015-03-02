@@ -76,7 +76,8 @@ console.log('running for ' + dateString);
 					var t = row[0].split(':');
 					if (t[1].indexOf("PM") > -1)
 						t[0] = parseInt(t[0]) + 11;
-					var jsDate = new Date('20' + d[2], d[0], d[1], t[0], t[1].charAt(0) + t[1].charAt(1), 0, 0);
+					var jsDate = new Date('20' + d[2], parseInt(d[0])-1, d[1], t[0], t[1].charAt(0) + t[1].charAt(1), 0, 0);
+					console.log(jsDate);
 					eventDate = jsDate.toISOString();
 					var team1 = lastRow[2];
 					var team2 = row[2];
