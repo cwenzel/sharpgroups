@@ -78,7 +78,7 @@ console.log('running for ' + dateString);
 						t[0] = parseInt(t[0]) + 11;
 					var jsDate = new Date('20' + d[2], d[0], d[1], t[0], t[1].charAt(0) + t[1].charAt(1), 0, 0);
 					//eventDate = '20' + d[2] + '-' + d[0] + '-' + d[1] + 'T' + t[0] + ':' + t[1].charAt(0) + t[1].charAt(1) + ':00.000Z';
-					jsDate.setHours(0, d.getTimezoneOffset(), 0, 0);
+					jsDate.setHours(0, jsDate.getTimezoneOffset(), 0, 0);
 					eventDate = jsDate.toISOString();
 					var team1 = lastRow[2];
 					var team2 = row[2];
