@@ -126,7 +126,7 @@ exports.delete = function(req, res) {
  * List of groups
  */
 exports.list = function(req, res) {
-	Group.find().sort('-created').populate('commissioner', 'displayName').exec(function(err, groups) {
+	Group.find({$or : [{'players' : {$in : [req.user]}}, {'endDate' : {$gt : new Date()}}]}).sort('-created').populate('commissioner', 'displayName').exec(function(err, groups) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
