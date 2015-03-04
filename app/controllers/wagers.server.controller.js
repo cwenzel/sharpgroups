@@ -101,8 +101,9 @@ exports.read = function(req, res) {
  * List of wagers
  */
 exports.list = function(req, res) {
-	var user = req.query.publicUserId ? req.query.publicUserId : req.user;
-		
+	var publicMode = req.query.publicUserId ? true : false;
+	var user = publicMode ? req.query.publicUserId : req.user;
+	
 	Wager.find({'user' : user, 'group' : req.query.group}, function (err, wagers) {
 		var boardItemQueryArray = [];
 		for (var i in wagers) {
@@ -119,7 +120,8 @@ exports.list = function(req, res) {
 
 			for (var i in wagers) {
 				var boardItem = boardItemLookup[wagers[i].boardItem];
-				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});
+				if (!publicMode || boardItem.processed)
+					returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});
 			}
 
 			res.json(returnArray);

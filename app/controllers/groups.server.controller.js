@@ -33,7 +33,7 @@ exports.create = function(req, res) {
 function getUserBankrollAmount(groupId, userId, callback) {
 	Bank.find({'group' : groupId, 'user' : userId}).lean().exec(function (err, bank) {
 		bank = bank[0];
-		callback(bank.amount);
+		callback(parseFloat(bank.amount).toFixed(2));
 	});
 }
 
