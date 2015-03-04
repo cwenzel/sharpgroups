@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups', 'Socket',
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
 	function($scope, $stateParams, $location, $http, Authentication, Groups) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
