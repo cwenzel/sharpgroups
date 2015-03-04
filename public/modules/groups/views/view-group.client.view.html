@@ -87,6 +87,116 @@
 			</div>
 		</div>
 
+		<div class="page-header">
+			<h1>Messages</h1>
+		</div>
+<style>
+.pages {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.page {
+  height: 300px;
+  position: absolute;
+  width: 100%;
+}
+.messages {
+  font-size: 150%;
+}
+
+.inputMessage {
+  font-size: 100%;
+}
+
+.log {
+  color: gray;
+  font-size: 70%;
+  margin: 5px;
+  text-align: center;
+}
+
+.chatArea {
+  height: 100%;
+  padding-bottom: 60px;
+}
+
+.messages {
+  height: 100%;
+  margin: 0;
+  overflow-y: scroll;
+  padding: 10px 20px 10px 20px;
+}
+
+.message.typing .messageBody {
+  color: gray;
+}
+
+.username {
+  float: left;
+  font-weight: 700;
+  overflow: hidden;
+  padding-right: 15px;
+  text-align: right;
+}
+
+.inputMessage {
+  border: 10px solid #000;
+  bottom: 0;
+  height: 60px;
+  left: 0;
+  outline: none;
+  padding-left: 10px;
+  position: absolute;
+  right: 0;
+  width: 100%;
+}
+
+.messagesWrapper {
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  font-family:
+    "HelveticaNeue-Light",
+    "Helvetica Neue Light",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    "Lucida Grande",
+    sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.messagesWrapper ul {
+  list-style: none;
+  word-wrap: break-word;
+}
+
+.messagesWrapper * {
+  box-sizing: border-box;
+}
+
+.page {
+	width: 80%;
+}
+</style>
+		<div class="messagesWrapper">
+		  <ul class="pages">
+		    <li class="chat page">
+		      <div class="chatArea">
+		        <ul class="messages">
+				<li ng-repeat="message in group.messages" class="message">
+					<span class="username">{{message.userName}}</span>
+					<span class="messagetext">{{message.text}}</span>
+				</li>
+			</ul>
+		      </div>
+		      <input type="text" id="chatBox" ng-keypress="chatPress($event, group)" class="inputMessage" placeholder="Type here..."/>
+		    </li>
+		  </ul>
+		</div>
 	</div>
 	
 	</div>

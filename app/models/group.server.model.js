@@ -87,6 +87,17 @@ var GroupSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'Event'
 	}],
+	messages: [{
+		'text' : {
+			type: String
+		},
+		'entered' : {
+			type: Date
+		},
+		'userName' : {
+			type: String
+		}
+	}],
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

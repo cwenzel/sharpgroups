@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups', 'Socket',
 	function($scope, $stateParams, $location, $http, Authentication, Groups) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
@@ -111,6 +111,19 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 			if (expireDate < new Date())
 				return true;
 			return false;
+		};
+
+		$scope.chatPress = function(keyEvent, group) {
+			if (keyEvent.which === 13) {
+				var now = new Date().toISOString();
+				var message = {'text' : document.getElementById('chatBox').value, 'entered': now, 'userName': $scope.authentication.user.displayName};
+				group.messages.push(message);
+				group.$save(function(response) {
+					document.getElementById('chatBox').value = '';
+				}, function(errorResponse) {
+					$scope.error = errorResponse.data.message;
+				});
+			}
 		};
 	}
 ]);
