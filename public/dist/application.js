@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'mean';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils', 'btford.socket-io'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -21,6 +21,7 @@ var ApplicationConfiguration = (function() {
 		registerModule: registerModule
 	};
 })();
+
 'use strict';
 
 //Start by defining the main module and adding the module dependencies
@@ -353,6 +354,16 @@ angular.module('core').service('Menus', [
 		this.addMenu('topbar');
 	}
 ]);
+'use strict'; 
+
+angular.module('core').factory('Socket', ['socketFactory',
+    function(socketFactory) {
+        return socketFactory({
+            prefix: '',
+        });
+    }
+]);
+
 'use strict';
 
 // Setting up route
@@ -445,7 +456,7 @@ angular.module('groups').config(['$stateProvider',
 
 'use strict';
 
-angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups', 'Socket',
 	function($scope, $stateParams, $location, $http, Authentication, Groups) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
@@ -549,6 +560,26 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				  error(function(data, status, headers, config) {
 				  });
 
+		};
+
+		$scope.groupExpired = function(group) {
+			var expireDate = new Date(group.endDate);
+			if (expireDate < new Date())
+				return true;
+			return false;
+		};
+
+		$scope.chatPress = function(keyEvent, group) {
+			if (keyEvent.which === 13) {
+				var now = new Date().toISOString();
+				var message = {'text' : document.getElementById('chatBox').value, 'entered': now, 'userName': $scope.authentication.user.displayName};
+				group.messages.push(message);
+				group.$save(function(response) {
+					document.getElementById('chatBox').value = '';
+				}, function(errorResponse) {
+					$scope.error = errorResponse.data.message;
+				});
+			}
 		};
 	}
 ]);
@@ -836,7 +867,7 @@ angular.module('wagers').config(['$stateProvider',
 			templateUrl: 'modules/wagers/views/list-wagers.client.view.html'
 		}).
 		state('listPublicWagers', {
-			url: '/wagers/leaderboard//:groupId/:userId/:displayName',
+			url: '/wagers/leaderboard/:groupId/:userId/:displayName',
 			templateUrl: 'modules/wagers/views/list-public-wagers.client.view.html'
 		}).
 		state('createWager', {
