@@ -39,6 +39,9 @@ var BoardItemSchema = new Schema({
 	}],
 	type: {
 		type: String
+	},
+	expired: {
+		type: Boolean
 	}
 }, {
     toObject: { virtuals: true },
