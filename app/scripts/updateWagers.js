@@ -17,7 +17,7 @@ var config = {db: {
 		}
 	}};
 
-if (true) {
+if (false) {
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
 		console.error(chalk.red('Could not connect to MongoDB!'));
@@ -36,7 +36,7 @@ function handleScoresAndBoardItems(scores) {
 	}
 }
 function findBoardItemsAndUpdate(score) {
-	var teams = [scoreLineNameConverter(sport, score.awayTeamName), scoreLineNameConverter(sport, score.homeTeamName)];
+	var teams = [scoreLineNameConverter(score.sport, score.awayTeamName), scoreLineNameConverter(score.sport, score.homeTeamName)];
 	BoardItem.find({'processed' : false, 'teams' : {$all : teams}}).exec(function (err, boardItems) {
 		updateBoardItemsWithScoreData(boardItems, score);
 	});
@@ -49,8 +49,8 @@ function updateBoardItemsWithScoreData(boardItems, score) {
 }
 
 function handleBoardItem(boardItem, score) {
-	var away = scoreLineNameConverter(sport, score.awayTeamName);
-	var home = scoreLineNameConverter(sport, score.homeTeamName);
+	var away = scoreLineNameConverter(score.sport, score.awayTeamName);
+	var home = scoreLineNameConverter(score.sport, score.homeTeamName);
 	boardItem.processed = true;
 	switch (boardItem.type) {
 		case 'awayml' :
