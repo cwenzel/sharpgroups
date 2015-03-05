@@ -17,7 +17,7 @@ var config = {db: {
 		}
 	}};
 
-if (false) {
+if (true) {
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
 		console.error(chalk.red('Could not connect to MongoDB!'));
@@ -36,7 +36,7 @@ function handleScoresAndBoardItems(scores) {
 	}
 }
 function findBoardItemsAndUpdate(score) {
-	var teams = [scoreLineNameConverter(score.awayTeamName), scoreLineNameConverter(score.homeTeamName)];
+	var teams = [scoreLineNameConverter(sport, score.awayTeamName), scoreLineNameConverter(sport, score.homeTeamName)];
 	BoardItem.find({'processed' : false, 'teams' : {$all : teams}}).exec(function (err, boardItems) {
 		updateBoardItemsWithScoreData(boardItems, score);
 	});
@@ -49,8 +49,8 @@ function updateBoardItemsWithScoreData(boardItems, score) {
 }
 
 function handleBoardItem(boardItem, score) {
-	var away = scoreLineNameConverter(score.awayTeamName);
-	var home = scoreLineNameConverter(score.homeTeamName);
+	var away = scoreLineNameConverter(sport, score.awayTeamName);
+	var home = scoreLineNameConverter(sport, score.homeTeamName);
 	boardItem.processed = true;
 	switch (boardItem.type) {
 		case 'awayml' :
@@ -145,12 +145,23 @@ function calcWinnings (amount, juice) {
 }
 
 
-function scoreLineNameConverter(teamName) {
-	switch (teamName) {
-		case 'Florida St' :
-			return 'Florida St.';
-		case 'Michigan St' :
-			return 'Michigan St.';
+function scoreLineNameConverter(sport, teamName) {
+	if (sport == 'ncb') {
+		switch (teamName) {
+			case 'Florida St' :
+				return 'Florida St.';
+			case 'Michigan St' :
+				return 'Michigan St.';
+			case 'Ole Miss' :
+				return 'Mississippi';
+			case 'Miami (FL)' :
+				return 'Miami';
+		}
+	} else if (sport == 'nba') {
+		switch (teamName) {
+			case 'LA Lakers' :
+				return 'Los Angeles Lakers';
+		}
 	}
 	return teamName;
 }
