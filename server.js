@@ -50,7 +50,7 @@ console.log('--');
 
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = 12;
+rule.hour = [7, 10, 12, 14];
 rule.minute = 1;
  
 schedule.scheduleJob(rule, function(){
