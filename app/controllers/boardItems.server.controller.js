@@ -22,7 +22,7 @@ exports.read = function(req, res) {
  */
 exports.list = function(req, res) {
 	Event.findById(req.query.eventId, function (err, ev) {
-		BoardItem.find({'sport' : ev.title, 'eventDate' : {$gt : new Date()}}).sort('seq').exec(function (err, boardItems) {
+		BoardItem.find({'sport' : ev.title, 'expired' : false, 'eventDate' : {$gt : new Date()}}).sort('seq').exec(function (err, boardItems) {
 			res.json(boardItems);
 	    	});
 	});
