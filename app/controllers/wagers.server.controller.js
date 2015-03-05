@@ -104,7 +104,7 @@ exports.list = function(req, res) {
 	var publicMode = req.query.publicUserId ? true : false;
 	var user = publicMode ? req.query.publicUserId : req.user;
 	
-	Wager.find({'user' : user, 'group' : req.query.group}, function (err, wagers) {
+	Wager.find({'user' : user, 'group' : req.query.group}).sort('-_id').exec(function (err, wagers) {
 		var boardItemQueryArray = [];
 		for (var i in wagers) {
 			boardItemQueryArray.push({'_id' : wagers[i].boardItem});
