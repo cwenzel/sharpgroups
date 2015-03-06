@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Groups',
-	function($scope, $stateParams, $location, $http, Authentication, Groups) {
+angular.module('groups').controller('GroupsController', ['$scope', '$stateParams', '$location', '$http', '$filter', 'Authentication', 'Groups',
+	function($scope, $stateParams, $location, $http, $filter, Authentication, Groups) {
 		$scope.authentication = Authentication;
 		$scope.create = function() {
 			// couldn't figure this out the angular way, so old school it is
@@ -123,6 +123,18 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				}, function(errorResponse) {
 					$scope.error = errorResponse.data.message;
 				});
+			}
+		};
+		var lastEnteredDate;
+		$scope.shouldDisplayMessageEntered = function(enteredDate) {
+			enteredDate = $filter('date')(enteredDate, 'mediumDate');
+			if (lastEnteredDate != enteredDate) {
+				lastEnteredDate = enteredDate;
+				return true;
+			} 
+			else {
+				lastEnteredDate = enteredDate;
+				return false;
 			}
 		};
 	}

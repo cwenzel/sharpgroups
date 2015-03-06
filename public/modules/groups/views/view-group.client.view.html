@@ -179,13 +179,23 @@
   box-sizing: border-box;
 }
 
+.messageEntered {
+text-align: center;
+display: list-item;
+color: gray;
+font-size: 70%;
+margin: 5px;
+}
+
 </style>
 		<div class="messagesWrapper">
 		  <ul class="pages">
 		    <li class="chat page">
 		      <div class="chatArea">
 		        <ul class="messages">
-				<li ng-repeat="message in group.messages" class="message">
+				<li ng-repeat="message in group.messages.slice().reverse()" class="message">
+					<span ng-if="shouldDisplayMessageEntered(message.entered)" class="messageEntered">{{message.entered | date : short}}</span>
+					<br ng-if="shouldDisplayMessageEntered(message.entered)">
 					<span class="username">{{message.userName}}</span>
 					<span class="messagetext">{{message.text}}</span>
 				</li>
