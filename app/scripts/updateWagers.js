@@ -2,11 +2,13 @@ var Score = require('../models/score.server.model.js');
 var BoardItem = require('../models/boardItem.server.model.js');
 var Wager = require('../models/wager.server.model.js');
 var Bank = require('../models/bank.server.model.js');
+var Team = require('../models/team.server.model.js');
 
 var mongoose = require('mongoose'),
 	BoardItem = mongoose.model('BoardItem'),
 	Wager = mongoose.model('Wager'),
 	Bank = mongoose.model('Bank'),
+	Team = mongoose.model('Team'),
 	Score = mongoose.model('Score');
 
 var config = {db: {
@@ -36,21 +38,23 @@ function handleScoresAndBoardItems(scores) {
 	}
 }
 function findBoardItemsAndUpdate(score) {
-	var teams = [scoreLineNameConverter(score.sport, score.awayTeamName), scoreLineNameConverter(score.sport, score.homeTeamName)];
-	BoardItem.find({'processed' : false, 'teams' : {$all : teams}}).exec(function (err, boardItems) {
-		updateBoardItemsWithScoreData(boardItems, score);
+	scoreLineNameConverter(score.sport, score.awayTeamName, function(awayTeam) {
+		scoreLineNameConverter(score.sport, score.homeTeamName, function(homeTeam) {
+				var teams = [awayTeam, homeTeam];
+				BoardItem.find({'processed' : false, 'teams' : {$all : teams}}).exec(function (err, boardItems) {
+				updateBoardItemsWithScoreData(boardItems, score, awayTeam, homeTeam);
+			});
+		});
 	});
 }
 
-function updateBoardItemsWithScoreData(boardItems, score) {
+function updateBoardItemsWithScoreData(boardItems, score, awayTeam, homeTeam) {
 	for (var b in boardItems) {
-		handleBoardItem(boardItems[b], score);
+		handleBoardItem(boardItems[b], score, awayTeam, homeTeam);
 	}
 }
 
-function handleBoardItem(boardItem, score) {
-	var away = scoreLineNameConverter(score.sport, score.awayTeamName);
-	var home = scoreLineNameConverter(score.sport, score.homeTeamName);
+function handleBoardItem(boardItem, score, awayTeam, homeTeam) {
 	boardItem.processed = true;
 	switch (boardItem.type) {
 		case 'awayml' :
@@ -62,22 +66,22 @@ function handleBoardItem(boardItem, score) {
 				boardItem.winner = true;
 			break;
 		case 'awayspread' :
-			var spread = parseFloat(boardItem.description.replace(away, ''));
+			var spread = parseFloat(boardItem.description.replace(awayTeam, ''));
 			if (score.awayTeamScore + spread > score.homeTeamScore)
 				boardItem.winner = true;
 			break;
 		case 'homespread' :
-			var spread = parseFloat(boardItem.description.replace(home, ''));
+			var spread = parseFloat(boardItem.description.replace(homeTeam, ''));
 			if (score.homeTeamScore + spread > score.awayTeamScore)
 				boardItem.winner = true;
 			break;
 		case 'over' :
-			var overUnder = parseFloat(boardItem.description.replace(away + '-' + home + ' Over:', ''));
+			var overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Over:', ''));
 			if (score.awayTeamScore + score.homeTeamScore > overUnder)
 				boardItem.winner = true;
 			break;
 		case 'under' :
-			var overUnder = parseFloat(boardItem.description.replace(away + '-' + home + ' Under:', ''));
+			var overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Under:', ''));
 			if (score.awayTeamScore + score.homeTeamScore < overUnder)
 				boardItem.winner = true;
 			break;
@@ -145,7 +149,21 @@ function calcWinnings (amount, juice) {
 }
 
 
-function scoreLineNameConverter(sport, teamName) {
+function scoreLineNameConverter(sport, teamName, callback) {
+	Team.find({'sport' : sport, 'alternateName' : teamName}, function(team) {
+		if (team && team.length == 1) {
+			callback(team[0].name);
+		}
+		else if (team && team.length == 0) {
+			console.log('ERROR: found team twice');
+			callback(teamName);
+		}
+		else {
+			// for now if the name isn't in the db just assume that there isn't any mapping needed
+			callback(teamName);
+		}
+	});
+/*
 	if (sport == 'ncb') {
 		switch (teamName) {
 			case 'Florida St' :
@@ -164,4 +182,5 @@ function scoreLineNameConverter(sport, teamName) {
 		}
 	}
 	return teamName;
+*/
 }
