@@ -150,7 +150,7 @@ function calcWinnings (amount, juice) {
 
 
 function scoreLineNameConverter(sport, teamName, callback) {
-	Team.find({'sport' : sport, 'alternateName' : teamName}, function(team) {
+	Team.find({'sport' : {$in : sport}, 'alternateName' : teamName}, function(team) {
 		if (team && team.length == 1) {
 			callback(team[0].name);
 		}
