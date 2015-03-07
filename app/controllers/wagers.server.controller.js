@@ -111,14 +111,14 @@ exports.list = function(req, res) {
 		}
 
 		getBoardItems(boardItemQueryArray, function (boardItems) {
-			
+			var i = 0;
 			var boardItemLookup = {};
 			var returnArray = [];
-			for (var i in boardItems) {
+			for (i in boardItems) {
     				boardItemLookup[boardItems[i]._id] = boardItems[i];
 			}
 
-			for (var i in wagers) {
+			for (i in wagers) {
 				var boardItem = boardItemLookup[wagers[i].boardItem];
 				if (!publicMode || boardItem.processed)
 					returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});

@@ -41,6 +41,7 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 			juice = juice.trim();
 			var slashPosition = juice.indexOf('/');
 			var winnings = 0;
+			var conversion = 0;
 
 			if (juice === 'EVEN') {
 				winnings = amount;
@@ -52,14 +53,14 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				console.log(theOdds);
 				winnings = amount * theOdds;
 			}
-			else if (juice[0] == '+') {
+			else if (juice[0] === '+') {
 				juice = parseInt(juice);
-				var conversion = juice / 100;
+				conversion = juice / 100;
 				winnings = conversion * amount;
 			}
 			else {
 				juice = parseInt(juice.substring(1));
-				var conversion = 1 / (juice / 100);
+				conversion = 1 / (juice / 100);
 				winnings = conversion * amount;
 			}
 
@@ -78,7 +79,7 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 		$scope.onAmountChanged = function() {
 			if (this.amount > 0) {
 				var juice = document.getElementById('itemJuice').innerText;
-				var ret = calcWinnings(this.amount, juice)	
+				var ret = calcWinnings(this.amount, juice);
 				$scope.pay = ret.pay;
 				$scope.winnings = ret.winnings;
 			}
@@ -86,6 +87,6 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 				$scope.pay = '';
 				$scope.winnings = '';
 			}
-		}
+		};
 	}
 ]);

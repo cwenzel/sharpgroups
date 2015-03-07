@@ -5,7 +5,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 		$scope.authentication = Authentication;
 		$scope.create = function() {
 			// couldn't figure this out the angular way, so old school it is
-			var eventCheckboxes = document.getElementById('groupForm')['events'];
+			var eventCheckboxes = document.getElementById('groupForm').events;
 			var checkedEvents = [];
 			for (var i in eventCheckboxes) {
 				var checkbox = eventCheckboxes[i];
@@ -70,7 +70,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 			});
 		};
 
-                $scope.joinGroup = function(group) {
+                $scope.joinGroup = function() {
 			var group = $scope.group;
 			group.$joinGroup(function() {
 
@@ -128,7 +128,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 		var lastEnteredDate;
 		$scope.shouldDisplayMessageEntered = function(enteredDate) {
 			enteredDate = $filter('date')(enteredDate, 'mediumDate');
-			if (lastEnteredDate != enteredDate) {
+			if (lastEnteredDate !== enteredDate) {
 				lastEnteredDate = enteredDate;
 				return true;
 			} 

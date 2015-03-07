@@ -6,7 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	BoardItem = mongoose.model('BoardItem'),
-	Event = mongoose.model('Event'),
+	EventCollection = mongoose.model('Event'),
 	_ = require('lodash');
 
 
@@ -21,7 +21,7 @@ exports.read = function(req, res) {
  * List of boardItems
  */
 exports.list = function(req, res) {
-	Event.findById(req.query.eventId, function (err, ev) {
+	EventCollection.findById(req.query.eventId, function (err, ev) {
 		BoardItem.find({'sport' : ev.title, 'expired' : false, 'eventDate' : {$gt : new Date()}}).sort('seq').exec(function (err, boardItems) {
 			res.json(boardItems);
 	    	});

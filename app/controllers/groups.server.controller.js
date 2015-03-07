@@ -66,7 +66,7 @@ exports.getGroupUsersAndBankrolls = function(req, res) {
 			res.json(output);
 		});
 	});
-}
+};
 
 /**
  * Show the current group
@@ -176,7 +176,7 @@ exports.joinGroup = function(req, res, next) {
 	var group = req.group;
 	group = _.extend(group, req.body);
 	group.players.push(req.user);
-	group.set('userInGroup', true)
+	group.set('userInGroup', true);
 	setUpBankroll(req.group, req.user, function(userBankrollAmount){
 		group.set('userBankroll', userBankrollAmount);
 
@@ -190,7 +190,7 @@ exports.joinGroup = function(req, res, next) {
 			}
 		});
 	});
-}
+};
 
 /**
  * Group authorization middleware

@@ -5,7 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
-	Event = mongoose.model('Event'),
+	EventCollection = mongoose.model('Event'),
 	_ = require('lodash');
 
 
@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
  * List of events
  */
 exports.list = function(req, res) {
-	Event.find().exec(function(err, events) {
+	EventCollection.find().exec(function(err, events) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -25,7 +25,7 @@ exports.list = function(req, res) {
 };
 
 exports.listForGroup = function(req, res) {
-	Event.find({'_id' : { $in : req.group.events}}).exec(function(err, events) {
+	EventCollection.find({'_id' : { $in : req.group.events}}).exec(function(err, events) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
