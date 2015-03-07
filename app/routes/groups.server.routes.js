@@ -20,7 +20,7 @@ module.exports = function(app) {
 		.delete(users.requiresLogin, groups.hasAuthorization, groups.delete);
 
 	app.route('/groups/getGroupUsersAndBankrolls/:groupId')
-		.get(users.requiresLogin, groups.getGroupUsersAndBankrolls)
+		.get(users.requiresLogin, groups.getGroupUsersAndBankrolls);
 
 	// Finish by binding the group middleware
 	app.param('groupId', groups.groupByID);
