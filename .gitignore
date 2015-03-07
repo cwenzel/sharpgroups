@@ -2,3 +2,5 @@
 /bower_componenets
 /public/dist
 /public/lib
+/npm-debug.log
+/access.log
