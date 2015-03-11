@@ -50,7 +50,6 @@ console.log('--');
 
 
 var rule = new schedule.RecurrenceRule();
-rule.hour = [7, 10, 12, 14];
 rule.minute = 1;
  
 schedule.scheduleJob(rule, function(){
@@ -58,7 +57,6 @@ schedule.scheduleJob(rule, function(){
 });
 
 rule = new schedule.RecurrenceRule();
-rule.hour = [19,20,21,22,23,0,1,2,3];
 rule.minute = 11;
 schedule.scheduleJob(rule, function(){
 	require('./app/scripts/scrapeResults');
@@ -66,7 +64,6 @@ schedule.scheduleJob(rule, function(){
 
 
 rule = new schedule.RecurrenceRule();
-rule.hour = [19,20,21,22,23,0,1,2,3];
 rule.minute = 21;
 schedule.scheduleJob(rule, function(){
 	require('./app/scripts/updateWagers');
