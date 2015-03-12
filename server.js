@@ -52,19 +52,23 @@ console.log('--');
 var rule = new schedule.RecurrenceRule();
 rule.minute = 1;
  
+	
+var biScraper = require('./app/scripts/scrapeBoardItems');
 schedule.scheduleJob(rule, function(){
-	require('./app/scripts/scrapeBoardItems');
+	biScraper.runScript();
 });
 
+	
+var resultScraper = require('./app/scripts/scrapeResults');
 rule = new schedule.RecurrenceRule();
 rule.minute = 11;
 schedule.scheduleJob(rule, function(){
-	require('./app/scripts/scrapeResults');
+	resultScraper.runScript();
 });
 
-
+var wagerScript = require('./app/scripts/updateWagers');
 rule = new schedule.RecurrenceRule();
 rule.minute = 21;
 schedule.scheduleJob(rule, function(){
-	require('./app/scripts/updateWagers');
+	wagerScript.runScript();
 });
