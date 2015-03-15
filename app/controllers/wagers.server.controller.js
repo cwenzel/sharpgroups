@@ -120,7 +120,7 @@ exports.list = function(req, res) {
 
 			for (i in wagers) {
 				var boardItem = boardItemLookup[wagers[i].boardItem];
-				if (!publicMode || boardItem.processed)
+				if (!publicMode || boardItem.processed || boardItem.eventDate < new Date())
 					returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});
 			}
 
