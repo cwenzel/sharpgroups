@@ -42,6 +42,6 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 				currentColor = (currentColor === 'colorOne') ? 'colorTwo' : 'colorOne';
 			}
 			return currentColor;
-		}
+		};
 	}
 ]);

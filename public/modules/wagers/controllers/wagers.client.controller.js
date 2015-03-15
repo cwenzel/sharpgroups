@@ -19,11 +19,15 @@ angular.module('wagers').controller('WagersController', ['$scope', '$stateParams
 		};
 
 		$scope.find = function() {
-			$scope.wagers = Wagers.query({group : $stateParams.groupId});
+			$scope.wagers = Wagers.query({group : $stateParams.groupId}, function() {
+				document.getElementById('loadingMessage').innerText = '';
+			});
 		};
 
 		$scope.findPublic = function() {
-			$scope.wagers = Wagers.query({group : $stateParams.groupId, publicUserId : $stateParams.userId});
+			$scope.wagers = Wagers.query({group : $stateParams.groupId, publicUserId : $stateParams.userId}, function() {
+				document.getElementById('loadingMessage').innerText = '';
+			});
 		};
 
 		$scope.findPublicUserName = function() {
