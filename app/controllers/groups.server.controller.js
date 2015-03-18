@@ -44,28 +44,20 @@ function getUserBankInfo(userQueryArray, callback) {
 }
 
 exports.getGroupUsersAndBankrolls = function(req, res) {
+
+Bank.find({'group' : req.group._id}).populate('user', 'displayName').sort('-amount').exec(function (err, banks) {
+	var total = 0;
 	var output = [];
-	Bank.find({'group' : req.group._id}).lean().exec(function (err, banks) {
-		var userQueryArray = [];
-		var total = 0;
-		for(var b in banks) {
-			userQueryArray.push(banks[b].user);
-			total += banks[b].amount;
-		}
+	for (var b in banks) {
+		total += banks[b].amount;
+	}
+	for (var i in banks) {
+		var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
+		output.push({'displayName' : banks[i].user.displayName, 'amount' : banks[i].amount, 'percentage' : percentage});
+	}
 
-		getUserBankInfo(userQueryArray, function (users) {
-			for (var i in users) {
-				var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
-				output.push({'userId' : users[i]._id, 'amount' : parseFloat(banks[i].amount).toFixed(2), 'displayName' : users[i].displayName, 'percentage' : percentage});
-			}
-			
-			output.sort(function (a, b) {
-				return parseFloat(b.amount) - parseFloat(a.amount);
-			});
-
-			res.json(output);
-		});
-	});
+	res.json(output);
+});
 };
 
 /**
