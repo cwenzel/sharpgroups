@@ -22,9 +22,9 @@ exports.read = function(req, res) {
  */
 exports.list = function(req, res) {
 	EventCollection.findById(req.query.eventId, function (err, ev) {
-		BoardItem.find({'sport' : ev.title, 'expired' : false, 'eventDate' : {$gt : new Date()}}).sort('grouping').exec(function (err, boardItems) {
+		BoardItem.aggregate({$sort : {'eventDate' :1 , 'teams' : 1}} ,{$match : {'sport' : ev.title, 'expired' : false, 'eventDate' : {$gt : new Date()}}}).exec(function (err, boardItems) {
 			res.json(boardItems);
-	    	});
+		});
 	});
 };
 

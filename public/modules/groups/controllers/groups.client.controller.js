@@ -116,6 +116,14 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 			return true;
 		};
 
+		$scope.groupExpired = function(group) {
+			var expireDate = new Date(group.endDate);
+			if (expireDate < new Date())
+				return true;
+			return false;
+		};
+
+
 		$scope.chatPress = function(keyEvent, group) {
 			if (keyEvent.which === 13) {
 				var now = new Date().toISOString();
