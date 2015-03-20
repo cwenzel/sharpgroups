@@ -8,6 +8,8 @@ var mongoose = require('mongoose'),
 	Group = mongoose.model('Group'),
 	Bank = mongoose.model('Bank'),
 	User = mongoose.model('User'),
+	Wager = mongoose.model('Wager'),
+	BoardItem = mongoose.model('BoardItem'),
 	_ = require('lodash');
 
 /**
@@ -43,21 +45,48 @@ function getUserBankInfo(userQueryArray, callback) {
 	});
 }
 
+function getUserMoneyInFlight(userId, groupId, outputRow, callback){
+	Wager.find({'user' : userId, 'group' : groupId}).populate('boardItem', 'processed').exec(function (err, wagers) {
+		var money = 0;
+		for (var i in wagers) {
+			if (!wagers[i].boardItem.processed) {
+				money += wagers[i].amount;
+			}
+		}
+		callback(money);
+	});
+}
+
+function repeater(i, groupId, output, callback) {
+	if (i < output.length) {
+		getUserMoneyInFlight(output[i].userId, groupId, output[i], function (moneyInFlight) {
+			output[i].moneyInFlight = moneyInFlight;
+			repeater(i + 1, groupId, output, callback);
+		});
+	}
+	else {
+		callback(output);
+	}
+}
+
 exports.getGroupUsersAndBankrolls = function(req, res) {
 
-Bank.find({'group' : req.group._id}).populate('user', 'displayName').sort('-amount').exec(function (err, banks) {
-	var total = 0;
-	var output = [];
-	for (var b in banks) {
-		total += banks[b].amount;
-	}
-	for (var i in banks) {
-		var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
-		output.push({'displayName' : banks[i].user.displayName, 'amount' : banks[i].amount, 'percentage' : percentage});
-	}
+	Bank.find({'group' : req.group._id}).populate('user', 'displayName').sort('-amount').exec(function (err, banks) {
+		var total = 0;
+		var output = [];
+		var rowsProcessed = 0;
+		for (var b in banks) {
+			total += banks[b].amount;
+		}
+		for (var i in banks) {
+			var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
+			output.push({'userId' : banks[i].user.id, 'displayName' : banks[i].user.displayName, 'amount' : banks[i].amount, 'percentage' : percentage});
+		}
 
-	res.json(output);
-});
+		repeater(0, req.group._id, output, function (out) {
+			res.json(output);
+		});
+	});
 };
 
 /**

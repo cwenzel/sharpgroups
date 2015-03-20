@@ -47,7 +47,7 @@
 	</small>
 	<p class="lead" data-ng-bind="group.description"></p>
         <div data-ng-show="!group.userInGroup">
-		<button class="btn btn-primary btn-lg" ng-click="joinGroup()" ng-if="!groupExpired(group)">Join sharpgroup</button>
+<!--		<button class="btn btn-primary btn-lg" ng-click="joinGroup()" ng-if="!groupExpired(group)">Join sharpgroup</button> -->
 	</div>
 	<div data-ng-show="group.userInGroup">
 		<p>You are a member of this group.</p>
@@ -62,25 +62,31 @@
 			<div class="list-group-item" style="display: table; width: 100%">
 					
 				<div style="display: table-row; font-weight: bold; width: 100%">
-					<div style="display: table-cell; width: 33%">
+					<div style="display: table-cell; width: 25%">
 						<p class="list-group-item-text">Gambler</p>
 					</div>
-					<div style="display: table-cell; width: 34%">
+					<div style="display: table-cell; width: 25%">
 						<p class="list-group-item-text"># of sharps</p>
 					</div>
-					<div style="display: table-cell; width: 33%">
+					<div style="display: table-cell; width: 25%">
+						<p class="list-group-item-text">Sharps in waiting</p>
+					</div>
+					<div style="display: table-cell; width: 25%">
 						<p class="list-group-item-text">Percentage of pot</p>
 					</div>
 				</div>
 
 				<div data-ng-repeat="item in items" style="display: table-row; width: 100%">
-					<div style="display: table-cell; width: 33%">
+					<div style="display: table-cell; width: 25%">
 						<a class="list-group-item-text" data-ng-bind="item.displayName" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userId}}/{{item.displayName}}"></a>
 					</div>
-					<div style="display: table-cell; width: 34%">
+					<div style="display: table-cell; width: 25%">
 						<p class="list-group-item-text" data-ng-bind="item.amount"></p>
 					</div>
-					<div style="display: table-cell; width: 33%">
+					<div style="display: table-cell; width: 25%">
+						<p class="list-group-item-text" data-ng-bind="item.moneyInFlight"></p>
+					</div>
+					<div style="display: table-cell; width: 25%">
 						<p class="list-group-item-text" data-ng-bind="item.percentage"></p>
 					</div>
 				</div>
