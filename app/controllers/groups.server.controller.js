@@ -60,7 +60,7 @@ function getUserMoneyInFlight(userId, groupId, outputRow, callback){
 function repeater(i, groupId, output, callback) {
 	if (i < output.length) {
 		getUserMoneyInFlight(output[i].userId, groupId, output[i], function (moneyInFlight) {
-			output[i].moneyInFlight = moneyInFlight;
+			output[i].moneyInFlight = parseFloat(moneyInFlight).toFixed(2);
 			repeater(i + 1, groupId, output, callback);
 		});
 	}
@@ -80,7 +80,8 @@ exports.getGroupUsersAndBankrolls = function(req, res) {
 		}
 		for (var i in banks) {
 			var percentage = (parseFloat(banks[i].amount/total) * 100).toFixed(2);
-			output.push({'userId' : banks[i].user.id, 'displayName' : banks[i].user.displayName, 'amount' : banks[i].amount, 'percentage' : percentage});
+			var roundAmount = parseFloat(banks[i].amount).toFixed(2);
+			output.push({'userId' : banks[i].user.id, 'displayName' : banks[i].user.displayName, 'amount' : roundAmount, 'percentage' : percentage});
 		}
 
 		repeater(0, req.group._id, output, function (out) {

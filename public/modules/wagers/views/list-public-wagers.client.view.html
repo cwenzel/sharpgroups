@@ -6,22 +6,40 @@
 		.winningBetInfo {
 			color: green;
 		}
+		.losingBetInfo {
+			color: red;
+		}
+		.notProcessedBetInfo {
+			color: gray;
+		}
 	</style>
 	<p id="loadingMessage">Loading...</p>
-	<div class="list-group" data-ng-controller="WagersController" data-ng-init="findPublic()">
-		<div data-ng-repeat="wager in wagers">
-			<div class="list-group-item">
-				<small class="list-group-item-text">
-					<span data-ng-bind="wager.boardItem.sport"></span>
-					on
-					<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
-				</small>
-				<h4 class="list-group-item-heading winningBetChild"><span data-ng-bind="wager.amount"></span> sharps</h4>
-				<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.description"></p>
-				<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.juice"></p>
-				<h3 data-ng-if="wager.boardItem.winner" class="winningBetInfo">PAID: <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></h3>
+	<div data-ng-controller="WagersController" data-ng-init="findPublic()">
+		<div class="list-group">
+			<div data-ng-repeat="wager in wagers">
+				<div class="list-group-item">
+					<small class="list-group-item-text">
+						<span data-ng-bind="wager.boardItem.sport"></span>
+						on
+						<span data-ng-bind="wager.boardItem.eventDate | date:'mediumDate'"></span>
+					</small>
+					<h4 class="list-group-item-heading winningBetChild"><span data-ng-bind="wager.amount"></span> sharps</h4>
+					<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.description"></p>
+					<p class="list-group-item-text winningBetChild" data-ng-bind="wager.boardItem.juice"></p>
+					<h3 data-ng-if="!wager.boardItem.push && !wager.boardItem.winner && wager.boardItem.processed" class="losingBetInfo">LOST: <span data-ng-bind="wager.amount"></span></h3>
+					<h3 data-ng-if="!wager.boardItem.processed" class="notProcessedBetInfo">NOT YET PROCESSED</h3>
+					<h3 data-ng-if="wager.boardItem.winner" class="winningBetInfo">PAID: <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></h3>
+					<h3 data-ng-if="wager.boardItem.push" class="winningBetInfo">PUSH - PAID: <span data-ng-bind="wager.amount"></span></h3>
+				</div>
 			</div>
 		</div>
+		<span data-ng-if="wagers.$resolved && wagers.length" data-ng-bind="group.bankroll"></span>
+		<span data-ng-repeat="wager in wagers">
+			<span> - </span>
+			<span data-ng-bind="wager.amount"></span>
+			<span data-ng-if="wager.boardItem.winner"> + <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></span>
+			<span data-ng-if="wager.boardItem.push"> + <span data-ng-bind="wager.amount"></span></span>
+		</span>
 	</div>
 	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
 		This person has not made any wagers in this group.

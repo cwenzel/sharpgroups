@@ -7,6 +7,12 @@
 		.winningBetInfo {
 			color: green;
 		}
+		.losingBetInfo {
+			color: red;
+		}
+		.notProcessedBetInfo {
+			color: gray;
+		}
 	</style>
 	<div data-ng-controller="WagersController" data-ng-init="find()">
 		<p id="loadingMessage">Loading...</p>
@@ -20,9 +26,17 @@
 				<h4 class="list-group-item-heading"><span data-ng-bind="wager.amount"></span> sharps</h4>
 				<p class="list-group-item-text" data-ng-bind="wager.boardItem.description"></p>
 				<p class="list-group-item-text" data-ng-bind="wager.boardItem.juice"></p>
+				<h3 data-ng-if="!wager.boardItem.winner && wager.boardItem.processed" class="losingBetInfo">LOST: <span data-ng-bind="wager.amount"></span></h3>
+				<h3 data-ng-if="!wager.boardItem.processed" class="notProcessedBetInfo">NOT YET PROCESSED</h3>
 				<h3 data-ng-if="wager.boardItem.winner" class="winningBetInfo">PAID: <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></h3>
 			</a>
 		</div>
+		<span data-ng-if="wagers.$resolved && wagers.length" data-ng-bind="group.bankroll"></span>
+		<span data-ng-repeat="wager in wagers">
+			<span> - </span>
+			<span data-ng-bind="wager.amount"></span>
+			<span data-ng-if="wager.boardItem.winner"> + <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></span>
+		</span>
 	</div>
 	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
 		You have not made any wagers in this group.
