@@ -59,6 +59,5 @@ exports.runScript = function() {
 	// write data to request body
 	req.write(post_data);
 	req.end();
-}
+};
 
-this.runScript();

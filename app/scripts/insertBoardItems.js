@@ -1,3 +1,5 @@
+'use strict';
+
 var BoardItem = require('../models/boardItem.server.model.js');
 var querystring = require('querystring');
 var inserter = require('./insertBoardItems');
@@ -15,7 +17,7 @@ var config = {db: {
 		}
 	}};
 
-if (true) {
+if (false) {
 var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	if (err) {
 		console.error('Could not connect to MongoDB!');
@@ -23,12 +25,35 @@ var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	}
 });
 }
+//Date, #, Team, Open, Spread, ML, Total, Bet#, Spread%, ML%, Total%, Exotics
+//{"seq" : 22, "grouping" : 11, "sport" : "NFL", "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
+function processRow (obj) {
+	obj.winner = false;
+	obj.processed = false;
 
-exports.insertBoardItems = function (rawCsv) {
-	var rows = rawCsv.split('\r\n');
-	var dateObject = new Date();
-	var dateString = String(dateObject.getMonth() + 1) + String(dateObject.getDate()) + String(dateObject.getFullYear());
-	runToday(rows, dateString);
+	BoardItem.find({'type' : obj.type, 'eventDate' : obj.eventDate, 'sport' : obj.sport, 'expired' : false, 'teams' : {'$all' : obj.teams}}, function(err, boardItems) {
+		// this means we have not processed this game before - easy, add it
+		if (boardItems.length === 0) {
+			var bitem = new BoardItem(obj);
+			bitem.expired = false;
+			bitem.save();
+		}
+		else if (boardItems.length === 1){
+			// check to see if anything actually changed
+			var bi = boardItems[0];
+			if (!(bi.expired === obj.expired && bi.eventDate === obj.eventDate && bi.description === obj.description && bi.juice === obj.juice)) {
+				// something changed, expire the existing board item and create another one
+				bi.expired = true;
+				bi.save();
+				var newbi = new BoardItem(obj);
+				newbi.expired = false;
+				newbi.save();
+			}
+		}
+		else {
+			console.log('ERROR: this find should only return 0 or 1 rows, we have a problem');
+		}
+	});
 }
 
 function runToday(rows, dateString) {
@@ -41,18 +66,18 @@ console.log('running for ' + dateString);
 	for (var i in rows) {
 		var row = rows[i].split(',');
 		var date = rows[i].split('/');
-		if (date.length == 1 && row.length == 1) {
+		if (date.length === 1 && row.length === 1) {
 			sport = row[0];
 			j = 0;
 		}
-		if (row.length > 4 && row[0] != 'Date') {
-			var oddEntry = (j % 2 == 1);
+		if (row.length > 4 && row[0] !== 'Date') {
+			var oddEntry = (j % 2 === 1);
 			if (oddEntry) {
-				if (row.length == 13 && lastRow.length == 13) {
-					eventDate = lastRow[0] + row[0];
+				if (row.length === 13 && lastRow.length === 13) {
+					var eventDate = lastRow[0] + row[0];
 					var d = lastRow[0].split('/');
 					var t = row[0].split(':');
-					if (t[1].indexOf("PM") > -1 && t[0] != 12)
+					if (t[1].indexOf('PM') > -1 && parseInt(t[0]) !== 12)
 						t[0] = parseInt(t[0]) + 12;
 					var jsDate = new Date('20' + d[2], parseInt(d[0])-1, d[1], t[0], t[1].charAt(0) + t[1].charAt(1), 0, 0);
 					console.log(jsDate);
@@ -66,15 +91,15 @@ console.log('running for ' + dateString);
 					var total = parseFloat(row[6].split(' ')[1]);
 					var thisGrouping = parseInt(dateString + grouping);
 					var thisSeq = parseInt(dateString + seq);
+					var description = '';
 					if (moneyLine1Juice.trim().length > 0) {
 						if (parseInt(moneyLine1Juice) > 0)
 							moneyLine1Juice = '+' + parseInt(moneyLine1Juice);
 						else if (parseInt(moneyLine2Juice) > 0)
 							moneyLine2Juice = '+' + parseInt(moneyLine2Juice);
 			
-
 						// ML ONE
-						var description = team1 + ' Moneyline';
+						description = team1 + ' Moneyline';
 						processRow({'type' : 'awayml', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
 						seq++;
 						// ML TWO
@@ -96,7 +121,7 @@ console.log('running for ' + dateString);
 							spread2 = spread2[0];
 						}
 						// do not enter empty spreads anymore, a pk must be present
-						if (spread1.length > 0 && spread1 != ' ') {
+						if (spread1.length > 0 && spread1 !== ' ') {
 							// SPREAD ONE
 							description = team1 + ' ' + spread1;
 							processRow({'type' : 'awayspread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
@@ -128,43 +153,10 @@ console.log('running for ' + dateString);
 	console.log('Its done');
 }
 
-//Date, #, Team, Open, Spread, ML, Total, Bet#, Spread%, ML%, Total%, Exotics
-//{"seq" : 22, "grouping" : 11, "sport" : "NFL", "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
-function processRow (obj) {
-	obj.winner = false;
-	obj.processed = false;
+exports.insertBoardItems = function (rawCsv) {
+	var rows = rawCsv.split('\r\n');
+	var dateObject = new Date();
+	var dateString = String(dateObject.getMonth() + 1) + String(dateObject.getDate()) + String(dateObject.getFullYear());
+	runToday(rows, dateString);
+};
 
-	BoardItem.find({'type' : obj.type, 'eventDate' : obj.eventDate, 'sport' : obj.sport, 'expired' : false, 'teams' : {'$all' : obj.teams}}, function(err, boardItems) {
-		// this means we have not processed this game before - easy, add it
-		if (boardItems.length == 0) {
-			var bi = new BoardItem(obj);
-			bi.expired = false;
-			bi.save();
-		}
-		else if (boardItems.length == 1){
-			// check to see if anything actually changed
-			var bi = boardItems[0];
-			if (bi.expired == obj.expired && bi.eventDate == obj.eventDate && bi.description == obj.description && bi.juice == obj.juice) {
-				// do nothing, nothing changed about this game
-			}
-			else {
-				// something changed, expire the existing board item and create another one
-				bi.expired = true;
-				bi.save();
-				var newbi = new BoardItem(obj);
-				newbi.expired = false;
-				newbi.save();
-			}
-		}
-		else {
-			console.log('ERROR: this find should only return 0 or 1 rows, we have a problem');
-		}
-	});
-/*
-	BoardItem.update(obj, obj, {'upsert' : true}, function(err) {
-		if (err) {
-			console.log(err);
-		}
-	});
-*/
-}

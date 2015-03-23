@@ -1,3 +1,5 @@
+'use strict';
+
 var Score = require('../models/score.server.model.js');
 var BoardItem = require('../models/boardItem.server.model.js');
 var Wager = require('../models/wager.server.model.js');
@@ -56,6 +58,8 @@ exports.runScript = function() {
 	}
 	
 	function handleBoardItem(boardItem, score, awayTeam, homeTeam) {
+		var spread = '';
+		var overUnder = '';
 		boardItem.processed = true;
 		switch (boardItem.type) {
 			case 'awayml' :
@@ -67,28 +71,28 @@ exports.runScript = function() {
 					boardItem.winner = true;
 				break;
 			case 'awayspread' :
-				var spread = parseFloat(boardItem.description.replace(awayTeam, ''));
+				spread = parseFloat(boardItem.description.replace(awayTeam, ''));
 				if (score.awayTeamScore + spread > score.homeTeamScore)
 					boardItem.winner = true;
 				if (score.awayTeamScore + spread === score.homeTeamScore)
 					boardItem.push = true;
 				break;
 			case 'homespread' :
-				var spread = parseFloat(boardItem.description.replace(homeTeam, ''));
+				spread = parseFloat(boardItem.description.replace(homeTeam, ''));
 				if (score.homeTeamScore + spread > score.awayTeamScore)
 					boardItem.winner = true;
 				if (score.homeTeamScore + spread === score.awayTeamScore)
 					boardItem.push = true;	
 				break;
 			case 'over' :
-				var overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Over:', ''));
+				overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Over:', ''));
 				if (score.awayTeamScore + score.homeTeamScore > overUnder)
 					boardItem.winner = true;
 				if (score.awayTeamScore + score.homeTeamScore === overUnder)
 					boardItem.push = true;	
 				break;
 			case 'under' :
-				var overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Under:', ''));
+				overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Under:', ''));
 				if (score.awayTeamScore + score.homeTeamScore < overUnder)
 					boardItem.winner = true;
 				if (score.awayTeamScore + score.homeTeamScore === overUnder)
@@ -128,6 +132,7 @@ exports.runScript = function() {
 		juice = juice.trim();
 		var slashPosition = juice.indexOf('/');
 		var winnings = 0;
+		var conversion = 0;
 	
 		if (juice === 'EVEN') {
 			winnings = amount;
@@ -139,14 +144,14 @@ exports.runScript = function() {
 			console.log(theOdds);
 			winnings = amount * theOdds;
 		}
-		else if (juice[0] == '+') {
+		else if (juice[0] === '+') {
 			juice = parseInt(juice);
-			var conversion = juice / 100;
+			conversion = juice / 100;
 			winnings = conversion * amount;
 		}
 		else {
 			juice = parseInt(juice.substring(1));
-			var conversion = 1 / (juice / 100);
+			conversion = 1 / (juice / 100);
 			winnings = conversion * amount;
 		}
 	
@@ -160,10 +165,10 @@ exports.runScript = function() {
 	
 	function scoreLineNameConverter(sport, teamName, callback) {
 		Team.find({'sport' : {$in : [sport]}, 'alternateName' : teamName}, function(err, team) {
-			if (team && team.length == 1) {
+			if (team && team.length === 1) {
 				callback(team[0].name);
 			}
-			else if (team && team.length == 0) {
+			else if (team && team.length === 0) {
 				// for now if the name isn't in the db just assume that there isn't any mapping needed
 				callback(teamName);
 			}
@@ -173,5 +178,5 @@ exports.runScript = function() {
 			}
 		});
 	}
-}
+};
 
