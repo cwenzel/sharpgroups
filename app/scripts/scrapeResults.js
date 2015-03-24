@@ -54,9 +54,10 @@ exports.runScript = function() {
 	function parseSport(sport, doc) {
 		var statusLines, awayNames, homeNames, awayScores, homeScores;
 		var i = 0;
+		var j = 0;
 		var awayScore, homeScore, awayTeam, homeTeam;
 	
-		if (sport !== 'ncb') {
+		if (sport === 'nba' || sport === 'nhl') {
 			awayNames = doc.match(/class="regNameAway">.*<\/div>/g);
 			homeNames = doc.match(/class="regNameHome">.*<\/div>/g);
 			awayScores = doc.match(/class="regScoreAway" align="right">.*<\/div>/g);
@@ -70,6 +71,27 @@ exports.runScript = function() {
 	
 				if (statusLines[i].indexOf('Final') > -1) {
 					processGame(sport, awayTeam, homeTeam, awayScore, homeScore);
+				}
+			}
+		}
+		else if (sport === 'mlb') {
+			awayNames = doc.match(/aTeamName"><a href="(\w|\.|\/|:|-)*">(-|\w|\s|:|\d|;|&)*<\/a>/g);
+			homeNames = doc.match(/hTeamName"><a href="(\w|\.|\/|:|-)*">(-|\w|\s|:|\d|;|&)*<\/a>/g);
+			awayScores = doc.match(/aScores" class="score" style="display:block"><li id="(&|\w|\s|-|\(|\)|\.|')*" class="finalScore">[0-9]*<\/li>/g);
+			homeScores = doc.match(/hScores" class="score" style="display:block"><li id="(&|\w|\s|-|\(|\)|\.|')*" class="finalScore">[0-9]*<\/li>/g);
+			statusLines = doc.match(/statusLine1">(-|\w|\s|:|\d|;|&)*<\/p>/g);
+			for (i in awayNames) {
+			if (statusLines[i].indexOf('ET') === -1) {
+					if (awayScores[j] && homeScores[j] &&  homeNames[i] && awayNames[i]) {
+						awayScore = parseInt(awayScores[j].replace(/aScores" class="score" style="display:block"><li id="(&|\w|\s|-|\(|\)|\.|')*" class="finalScore">/g, '').replace('</li>', ''));
+						homeScore = parseInt(homeScores[j].replace(/hScores" class="score" style="display:block"><li id="(&|\w|\s|-|\(|\)|\.|')*" class="finalScore">/g, '').replace('</li>', ''));
+						awayTeam = awayNames[i].replace(/aTeamName"><a href="(\w|\.|\/|:|-)*">/g, '').replace('</a>', '');
+						homeTeam = homeNames[i].replace(/hTeamName"><a href="(\w|\.|\/|:|-)*">/g, '').replace('</a>', '');
+						if (statusLines[i].indexOf('Final') > -1) {
+							processGame(sport, awayTeam, homeTeam, awayScore, homeScore);
+						}
+						j++;
+					}
 				}
 			}
 		}
@@ -126,12 +148,12 @@ exports.runScript = function() {
 	var today = new Date();
 	today = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
 	
-	var currentEvents = ['nba', 'ncb', 'nhl'];
+	var currentEvents = ['nba', 'ncb', 'nhl', 'mlb'];
 	var path = '';
 	
 	for (var i in currentEvents) {
 		var options;
-		if (currentEvents[i] !== 'ncb') {
+		if (currentEvents[i] === 'nba' || currentEvents[i] === 'nhl') {
 			path = '/' + currentEvents[i] + '/caster/realtime';
 			options = {
 			  host: 'insider.espn.go.com',
@@ -143,7 +165,7 @@ exports.runScript = function() {
 			  }
 			};
 		}
-		else {
+		else if (currentEvents[i] === 'ncb' || currentEvents[i] === 'mlb'){
 			path = '/' + currentEvents[i] + '/scoreboard';
 		 	options = {
 			  host: 'scores.espn.go.com',
@@ -158,4 +180,3 @@ exports.runScript = function() {
 		makeRequest(options, currentEvents[i]);
 	}	
 };
-
