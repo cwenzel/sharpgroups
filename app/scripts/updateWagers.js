@@ -141,7 +141,6 @@ exports.runScript = function() {
 			var numerator = juice.split('/')[0];
 			var denominator = juice.split('/')[1];
 			var theOdds = parseFloat(numerator / denominator);
-			console.log(theOdds);
 			winnings = amount * theOdds;
 		}
 		else if (juice[0] === '+') {

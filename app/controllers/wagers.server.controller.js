@@ -64,26 +64,32 @@ exports.create = function(req, res) {
 		if (existingWager.length !== 0)
 			return res.status(400).send({message: 'You are not allowed to place the same wager twice'});
 
-		getGroup(wager.group, function (group) {
-			if (wager.amount > group.maxBet)
-				return res.status(400).send({message: 'The max bet is: ' + group.maxBet});
+		getBoardItems({'_id' : wager.boardItem}, function (boardItems) {
+			var now = new Date();
+			if (now > boardItems[0].eventDate)
+				return res.status(400).send({message: 'This wager is expired, please try another wager'});
+
+			getGroup(wager.group, function (group) {
+				if (wager.amount > group.maxBet)
+					return res.status(400).send({message: 'The max bet is: ' + group.maxBet});
 	
-			updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
-				if (err) {
-					return res.status(400).send({
-						message: err
-					});
-				} else {
-					wager.save(function(err) {
-						if (err) {
-							return res.status(400).send({
-								message: errorHandler.getErrorMessage(err)
-							});
-						} else {
-							res.json(wager);
-						}
-					});
-				}
+				updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
+					if (err) {
+						return res.status(400).send({
+							message: err
+						});
+					} else {
+						wager.save(function(err) {
+							if (err) {
+								return res.status(400).send({
+									message: errorHandler.getErrorMessage(err)
+								});
+							} else {
+								res.json(wager);
+							}
+						});
+					}
+				});
 			});
 		});
 	});
