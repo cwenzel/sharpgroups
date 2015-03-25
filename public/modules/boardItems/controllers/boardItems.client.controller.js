@@ -31,7 +31,7 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 			});
 		};
 		var currentTeams = [];
-		var currentColor = 'colorOne';
+		var currentColor = 'color-one';
 		$scope.getClassForBoardItem = function(boardItem) {
 			var switchColors = false;
 			if (boardItem.teams[0] !== currentTeams[0] && currentTeams.length > 0)
@@ -39,7 +39,7 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 
 			currentTeams = boardItem.teams;
 			if (switchColors) {
-				currentColor = (currentColor === 'colorOne') ? 'colorTwo' : 'colorOne';
+				currentColor = (currentColor === 'color-one') ? 'color-two' : 'color-one';
 			}
 			return currentColor;
 		};
