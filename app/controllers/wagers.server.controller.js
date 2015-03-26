@@ -110,12 +110,17 @@ exports.list = function(req, res) {
 	var publicMode = req.query.publicUserId ? true : false;
 	var user = publicMode ? req.query.publicUserId : req.user;
 
-	Wager.find({'user' : user, 'group' : req.query.group}).populate({path : 'boardItem', options : {'sort' : {'boardItem.eventDate' : -1}}}).exec(function (err, wagers) {
+	Wager.find({'user' : user, 'group' : req.query.group}).populate('boardItem').exec(function (err, wagers) {
 		var returnArray = [];
 		for (var i in wagers) {
 			if (!publicMode || wagers[i].boardItem.processed || wagers[i].boardItem.eventDate < new Date())
 				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : wagers[i].boardItem, 'groupId' : wagers[i].group});
 		}
+		returnArray.sort(function (a,b) {
+			if (a.boardItem.eventDate > b.boardItem.eventDate)
+				return -1;
+			return 1;
+		});
 		res.json(returnArray);
 	});
 };
