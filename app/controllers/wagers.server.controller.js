@@ -109,30 +109,15 @@ exports.read = function(req, res) {
 exports.list = function(req, res) {
 	var publicMode = req.query.publicUserId ? true : false;
 	var user = publicMode ? req.query.publicUserId : req.user;
-	
-	Wager.find({'user' : user, 'group' : req.query.group}).sort('-_id').exec(function (err, wagers) {
-		var boardItemQueryArray = [];
+
+	Wager.find({'user' : user, 'group' : req.query.group}).populate('boardItem').exec(function (err, wagers) {
+		var returnArray = [];
 		for (var i in wagers) {
-			boardItemQueryArray.push({'_id' : wagers[i].boardItem});
+			if (!publicMode || wagers[i].boardItem.processed || wagers[i].boardItem.eventDate < new Date())
+				returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : wagers[i].boardItem, 'groupId' : wagers[i].group});
 		}
-
-		getBoardItems(boardItemQueryArray, function (boardItems) {
-			var i = 0;
-			var boardItemLookup = {};
-			var returnArray = [];
-			for (i in boardItems) {
-    				boardItemLookup[boardItems[i]._id] = boardItems[i];
-			}
-
-			for (i in wagers) {
-				var boardItem = boardItemLookup[wagers[i].boardItem];
-				if (!publicMode || boardItem.processed || boardItem.eventDate < new Date())
-					returnArray.push({'_id' : wagers[i]._id, 'amount' : wagers[i].amount, 'boardItem' : boardItem, 'groupId' : wagers[i].group});
-			}
-
-			res.json(returnArray);
-		});
-    	});
+		res.json(returnArray);
+	});
 };
 
 /**
