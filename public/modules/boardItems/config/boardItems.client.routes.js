@@ -6,7 +6,7 @@ angular.module('boardItems').config(['$stateProvider',
 		// boardItems state routing
 		$stateProvider.
 		state('listBoardItems', {
-			url: '/boardItems/:groupId/:eventId',
+			url: '/boardItems/:groupId',
 			templateUrl: 'modules/boardItems/views/list-boardItems.client.view.html'
 		}).
 		state('viewBoardItem', {

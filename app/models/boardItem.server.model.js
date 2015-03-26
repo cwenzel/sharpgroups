@@ -13,8 +13,9 @@ var BoardItemSchema = new Schema({
         eventDate: {
                 type: Date
         },
-	sport: {
-		type: String
+	eventType: {
+		type: Schema.ObjectId,
+                ref: 'Event'
 	},
 	description: {
 		type: String

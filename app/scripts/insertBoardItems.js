@@ -1,11 +1,13 @@
 'use strict';
 
+var EventCollection = require('../models/event.server.model.js');
 var BoardItem = require('../models/boardItem.server.model.js');
 var querystring = require('querystring');
 var inserter = require('./insertBoardItems');
 
 var mongoose = require('mongoose'),
 	BoardItem = mongoose.model('BoardItem'),
+	EventCollection = mongoose.model('Event'),
 	_ = require('lodash'),
 	http = require('http');
 
@@ -26,12 +28,12 @@ var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 });
 }
 //Date, #, Team, Open, Spread, ML, Total, Bet#, Spread%, ML%, Total%, Exotics
-//{"seq" : 22, "grouping" : 11, "sport" : "NFL", "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
+//{"seq" : 22, "grouping" : 11, eventType : ObjectId("fjklfj"), "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
 function processRow (obj) {
 	obj.winner = false;
 	obj.processed = false;
 
-	BoardItem.find({'type' : obj.type, 'eventDate' : obj.eventDate, 'sport' : obj.sport, 'expired' : false, 'teams' : {'$all' : obj.teams}}, function(err, boardItems) {
+	BoardItem.find({'type' : obj.type, 'eventDate' : obj.eventDate, 'eventType' : obj.eventType, 'expired' : false, 'teams' : {'$all' : obj.teams}}, function(err, boardItems) {
 		// this means we have not processed this game before - easy, add it
 		if (boardItems.length === 0) {
 			var bitem = new BoardItem(obj);
@@ -56,8 +58,18 @@ function processRow (obj) {
 	});
 }
 
-function runToday(rows, dateString) {
-	var sport = '';
+function findEventFromEventTitle(events, title) {
+	for (var i in events) {
+		if (events[i].title === title) {
+			return events[i];
+		}
+	}
+	console.log('ERROR: couldnt find event document for ' + title);
+}
+
+function runToday(rows, dateString, events) {
+	var eventTitle = '';
+	var eventObject = {};
 	var j = 0;
 	var lastRow = {};
 	var seq = 1;
@@ -67,7 +79,8 @@ console.log('running for ' + dateString);
 		var row = rows[i].split(',');
 		var date = rows[i].split('/');
 		if (date.length === 1 && row.length === 1) {
-			sport = row[0];
+			eventTitle = row[0];
+			eventObject = findEventFromEventTitle(events, eventTitle);
 			j = 0;
 		}
 		if (row.length > 4 && row[0] !== 'Date') {
@@ -100,11 +113,11 @@ console.log('running for ' + dateString);
 			
 						// ML ONE
 						description = team1 + ' Moneyline';
-						processRow({'type' : 'awayml', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
+						processRow({'type' : 'awayml', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine1Juice, 'eventDate' : eventDate});
 						seq++;
 						// ML TWO
 						description = team2 + ' Moneyline';
-						processRow({'type' : 'homeml', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine2Juice, 'eventDate' : eventDate});
+						processRow({'type' : 'homeml', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'juice' : moneyLine2Juice, 'eventDate' : eventDate});
 						seq++;
 					}
 					if (spread1.length > 0) {
@@ -124,22 +137,22 @@ console.log('running for ' + dateString);
 						if (spread1.length > 0 && spread1 !== ' ') {
 							// SPREAD ONE
 							description = team1 + ' ' + spread1;
-							processRow({'type' : 'awayspread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
+							processRow({'type' : 'awayspread', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread1, 'juice' : juiceOne, 'eventDate' : eventDate});
 							seq++;
 							// SPREAD TWO
 							description = team2 + ' ' + spread2;
-							processRow({'type' : 'homespread', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : juiceTwo, 'eventDate' : eventDate});
+							processRow({'type' : 'homespread', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'spread' : spread2, 'juice' : juiceTwo, 'eventDate' : eventDate});
 							seq++;
 						}
 					}
 					if (total > 0) {
 						// OVER
 						description = team1 + '-' + team2 + ' Over: ' + total;
-						processRow({'type' : 'over', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'over' : true,  'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'type' : 'over', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'over' : true,  'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
 						seq++;
 						// UNDER
 						description = team1 + '-' + team2 + ' Under: ' + total;
-						processRow({'type' : 'under', 'teams' : [team1, team2], 'sport' : sport, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'under' : true, 'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
+						processRow({'type' : 'under', 'teams' : [team1, team2], 'eventType' : eventObject, 'seq' : thisSeq++, 'grouping' : thisGrouping, 'description' : description, 'under' : true, 'total' : total, 'juice' : '-110', 'eventDate' : eventDate});
 						seq++;
 					}
 
@@ -157,6 +170,9 @@ exports.insertBoardItems = function (rawCsv) {
 	var rows = rawCsv.split('\r\n');
 	var dateObject = new Date();
 	var dateString = String(dateObject.getMonth() + 1) + String(dateObject.getDate()) + String(dateObject.getFullYear());
-	runToday(rows, dateString);
+
+	EventCollection.find({}, function(err, events) {
+		runToday(rows, dateString, events);
+	});
 };
 

@@ -1,14 +1,17 @@
 <section data-ng-controller="GroupsController" data-ng-init="findOne()">
    <p id="loadingMessage">Loading...</p>
-   <div data-ng-controller="BoardItemsController" data-ng-init="find()">
+   <div data-ng-controller="BoardItemsController" data-ng-init="find(group)">
       <div class="panel panel-betboard">
          <div class="panel-heading">
             <h3 class="panel-title">BET BOARD</h3>
             <h4 class="panel-secondary-title">BETS FOR THE <span data-ng-bind="group.title"></span> GROUP</h4>
           </div> 
-          <!--div class="panel-body"> 
-              place holder for filters and what not
-          </div--> 
+	  <div class="panel-body"> 	  
+	    Sorting By: 	  
+            <select><!-- data-ng-model="group.events" ng-options="ev.title for ev in group.events" --> <!-- we will want to do something like this, but group.events is not populated -->
+	      <option label="All">All</option>
+	    </select>
+	  </div> 
       </div>
        
       <div data-ng-repeat="boardItem in boardItems">
@@ -17,7 +20,7 @@
                <div class="col-md-6 col-xs-12" ng-repeat="boardItem in boardItems.slice($index, $index+2)">
                   <div class="panel panel-betboard-item">
                      <div ng-class="getClassForBoardItem(boardItem)" class="panel-heading">
-                        <h3 class="panel-title"><span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span><span style="float:right" data-ng-bind="boardItem.sport"></span></h3>
+                        <h3 class="panel-title"><span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span><span style="float:right" data-ng-bind="boardItem.eventType.title"></span></h3>
                      </div>
                      <div class="panel-body" ng-class="getClassForBoardItem(boardItem)">  
                         <h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>

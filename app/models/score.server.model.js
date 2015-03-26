@@ -22,8 +22,9 @@ var ScoreSchema = new Schema({
 	homeTeamScore: {
 		type: Number
 	},
-	sport: {
-		type: String
+	eventType: {
+		type: Schema.ObjectId,
+                ref: 'Event'
 	}
 }, {
     toObject: { virtuals: true },

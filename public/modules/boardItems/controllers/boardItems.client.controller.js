@@ -16,11 +16,8 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 			});
 		};
 
-
-
 		$scope.find = function() {
-			var eventId = document.URL.split('/')[6]; 
-			$scope.boardItems = BoardItems.query({'eventId' : eventId}, function() {
+			$scope.boardItems = BoardItems.query({'groupId' : $stateParams.groupId}, function() {
 				document.getElementById('loadingMessage').innerText='';
 			});
 		};

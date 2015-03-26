@@ -41,8 +41,8 @@ exports.runScript = function() {
 		}
 	}
 	function findBoardItemsAndUpdate(score) {
-		scoreLineNameConverter(score.sport, score.awayTeamName, function(awayTeam) {
-			scoreLineNameConverter(score.sport, score.homeTeamName, function(homeTeam) {
+		scoreLineNameConverter(score.eventType, score.awayTeamName, function(awayTeam) {
+			scoreLineNameConverter(score.eventType, score.homeTeamName, function(homeTeam) {
 					var teams = [awayTeam, homeTeam];
 					BoardItem.find({'processed' : false, 'teams' : {$all : teams}}).exec(function (err, boardItems) {
 						updateBoardItemsWithScoreData(boardItems, score, awayTeam, homeTeam);
@@ -163,8 +163,8 @@ exports.runScript = function() {
 	}
 	
 	
-	function scoreLineNameConverter(sport, teamName, callback) {
-		Team.find({'sport' : {$in : [sport]}, 'alternateName' : teamName}, function(err, team) {
+	function scoreLineNameConverter(eventType, teamName, callback) {
+		Team.find({'eventType' : {$in : [eventType]}, 'alternateName' : teamName}, function(err, team) {
 			if (team && team.length === 1) {
 				callback(team[0].name);
 			}

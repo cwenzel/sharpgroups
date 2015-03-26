@@ -13,6 +13,12 @@ var EventSchema = new Schema({
 	title: {
 		type: String
 	},
+	alternateTitle : {
+		type: String
+	},
+    	inSeason : {
+		type: Boolean	   
+	},
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
