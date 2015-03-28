@@ -24,7 +24,7 @@ var WagerSchema = new Schema({
 	},
 	amount: {
 		type: Number,
-		min: 1
+		min: 0.01
 	},
 }, {
     toObject: { virtuals: true },

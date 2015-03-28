@@ -57,7 +57,7 @@ exports.create = function(req, res) {
 	var wager = new Wager(req.body);
 	wager.user = req.user;
 
-	if (wager.amount < 1)
+	if (parseFloat(wager.amount) < 0.01)
 		return res.status(400).send({message: 'Wager can not be negative'});
 	
 	findExistingWager(wager.group, wager.user, wager.boardItem, function(existingWager) {
