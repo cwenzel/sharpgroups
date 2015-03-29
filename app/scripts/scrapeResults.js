@@ -11,13 +11,12 @@ var mongoose = require('mongoose'),
 
 function processGame(eventType, awayTeam, homeTeam, awayScore, homeScore) {
 	var obj = {'homeTeamName' : homeTeam, 'awayTeamName' : awayTeam, 'homeTeamScore' : homeScore, 'awayTeamScore' : awayScore, 'eventType' : eventType};
-//	console.log(obj);
 	Score.find(obj).exec(function (err, s) {
 		if (err)
 			console.log('err ' + err);
 		if (s && s.length > 0) {
-			//console.log('already entered:');
-			//console.log(obj);
+			console.log('already entered:');
+			console.log(obj);
 		}
 		else {
 			var score = new Score(obj);
@@ -37,7 +36,7 @@ function parseSport(eventType, doc) {
 	var j = 0;
 	var awayScore, homeScore, awayTeam, homeTeam;
 
-	if (eventType.alternateTitle === 'mlb' || eventType.alternateTitle == 'nba') {
+	if (eventType.alternateTitle === 'mlb' || eventType.alternateTitle === 'nba') {
 		awayNames = doc.match(/aTeamName"><a href="(\w|\.|\/|:|-)*">(-|\w|\s|:|\d|;|&)*<\/a>/g);
 		homeNames = doc.match(/hTeamName"><a href="(\w|\.|\/|:|-)*">(-|\w|\s|:|\d|;|&)*<\/a>/g);
 		awayScores = doc.match(/aScores" class="score" style="display:(\s)*block(;)*">(&|\w|\s|-|\(|\)|\.|'|<|>|\\|;|"|'|=|\/)*class="finalScore">[0-9]*<\/li>/g);

@@ -1,7 +1,7 @@
 'use strict';
-var biScraper = require('./scrapeBoardItems');
-var resultScraper = require('./scrapeResults');
-var wagerScript = require('./updateWagers');
+var biScraper = require('./app/scripts/scrapeBoardItems');
+var resultScraper = require('./app/scripts/scrapeResults');
+var wagerScript = require('./app/scripts/updateWagers');
 
 var arg = process.argv[2];
 
