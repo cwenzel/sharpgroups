@@ -55,7 +55,7 @@ rule.minute = 1;
 	
 var biScraper = require('./app/scripts/scrapeBoardItems');
 schedule.scheduleJob(rule, function(){
-	biScraper.runScript();
+	biScraper.runScript(false);
 });
 
 	
@@ -63,12 +63,12 @@ var resultScraper = require('./app/scripts/scrapeResults');
 rule = new schedule.RecurrenceRule();
 rule.minute = 11;
 schedule.scheduleJob(rule, function(){
-	resultScraper.runScript();
+	resultScraper.runScript(false);
 });
 
 var wagerScript = require('./app/scripts/updateWagers');
 rule = new schedule.RecurrenceRule();
 rule.minute = 21;
 schedule.scheduleJob(rule, function(){
-	wagerScript.runScript();
+	wagerScript.runScript(false);
 });

@@ -11,22 +11,6 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	http = require('http');
 
-var config = {db: {
-		uri: 'mongodb://localhost/mean-dev',
-		options: {
-			user: '',
-			pass: ''
-		}
-	}};
-
-if (false) {
-var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
-	if (err) {
-		console.error('Could not connect to MongoDB!');
-		console.log(err);
-	}
-});
-}
 //Date, #, Team, Open, Spread, ML, Total, Bet#, Spread%, ML%, Total%, Exotics
 //{"seq" : 22, "grouping" : 11, eventType : ObjectId("fjklfj"), "description" : "SHORTEST MADE FIELD GOAL OF GAME UNDER25.5", "juice" : "+105 ", "expired" : false, "winner" : false }
 function processRow (obj) {
@@ -166,7 +150,24 @@ console.log('running for ' + dateString);
 	console.log('Its done');
 }
 
-exports.insertBoardItems = function (rawCsv) {
+exports.insertBoardItems = function (rawCsv, scriptRunner) {
+	if (scriptRunner) {
+		var config = {db: {
+				uri: 'mongodb://localhost/mean-dev',
+				options: {
+					user: '',
+					pass: ''
+				}
+			}};
+		
+		var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
+			if (err) {
+				console.error('Could not connect to MongoDB!');
+				console.log(err);
+			}
+		});
+	}
+
 	var rows = rawCsv.split('\r\n');
 	var dateObject = new Date();
 	var dateString = String(dateObject.getMonth() + 1) + String(dateObject.getDate()) + String(dateObject.getFullYear());

@@ -1,6 +1,9 @@
 <section data-ng-controller="GroupsController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1><span data-ng-controller="WagersController" data-ng-bind="findPublicUserName()"></span> wagers for <span data-ng-bind="group.title"></span></h1>
+		<p class="lead">
+			<a data-ng-bind="group.title" ng-href="/#!/groups/{{group._id}}"></a> | 
+			<span data-ng-controller="WagersController" data-ng-bind="findPublicUserName()"></span>
+		</p>
 	</div>
 	<style type="text/css">
 		.winningBetInfo {
@@ -15,6 +18,17 @@
 	</style>
 	<p id="loadingMessage">Loading...</p>
 	<div data-ng-controller="WagersController" data-ng-init="findPublic()">
+		<a ng-click="showWagerMath = !showWagerMath"><span ng-show="!showWagerMath">Show</span><span ng-show="showWagerMath">Hide</span> Math</a>
+		<div ng-show="showWagerMath">
+			<span data-ng-bind="group.bankroll"></span>
+			<span data-ng-repeat="wager in wagers">
+				<span> - </span>
+				<span data-ng-bind="wager.amount"></span>
+				<span data-ng-if="wager.boardItem.winner"> + <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></span>
+				<span data-ng-if="wager.boardItem.push"> + <span data-ng-bind="wager.amount"></span></span>
+			</span>
+		</div>
+
 		<div class="list-group">
 			<div data-ng-repeat="wager in wagers">
 				<div class="list-group-item">
@@ -33,13 +47,6 @@
 				</div>
 			</div>
 		</div>
-		<span data-ng-if="wagers.$resolved && wagers.length" data-ng-bind="group.bankroll"></span>
-		<span data-ng-repeat="wager in wagers">
-			<span> - </span>
-			<span data-ng-bind="wager.amount"></span>
-			<span data-ng-if="wager.boardItem.winner"> + <span data-ng-bind="calcWinnings(wager.amount, wager.boardItem.juice)"></span></span>
-			<span data-ng-if="wager.boardItem.push"> + <span data-ng-bind="wager.amount"></span></span>
-		</span>
 	</div>
 	<div class="alert alert-warning text-center" data-ng-if="wagers.$resolved && !wagers.length">
 		This person has not made any wagers in this group.

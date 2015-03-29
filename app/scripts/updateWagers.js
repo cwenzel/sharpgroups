@@ -21,16 +21,16 @@ var config = {db: {
 		}
 	}};
 
-if (false) {
-var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
-	if (err) {
-		console.error('Could not connect to MongoDB!');
-		console.log(err);
+exports.runScript = function(scriptRunner) {
+	if (scriptRunner) {
+		var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
+			if (err) {
+				console.error('Could not connect to MongoDB!');
+				console.log(err);
+			}
+		});
 	}
-});
-}
 
-exports.runScript = function() {
 	Score.find({}).exec(function (err, scores) {
 		handleScoresAndBoardItems(scores);
 	});
@@ -141,7 +141,6 @@ exports.runScript = function() {
 			var numerator = juice.split('/')[0];
 			var denominator = juice.split('/')[1];
 			var theOdds = parseFloat(numerator / denominator);
-			console.log(theOdds);
 			winnings = amount * theOdds;
 		}
 		else if (juice[0] === '+') {

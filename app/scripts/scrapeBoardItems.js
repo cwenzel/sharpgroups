@@ -7,7 +7,7 @@ var inserter = require('./insertBoardItems');
  * Module dependencies.
  */
 
-exports.runScript = function() {
+exports.runScript = function(scriptRunner) {
 
 	var today = new Date();
 	console.log('Scraping board items for:');
@@ -48,7 +48,7 @@ exports.runScript = function() {
 	      body += chunk;
 	  });
 	  res.on('end', function() {
-	      inserter.insertBoardItems(body);
+	      inserter.insertBoardItems(body, scriptRunner);
 	  });
 	});
 	

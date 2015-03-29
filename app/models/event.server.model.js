@@ -16,8 +16,11 @@ var EventSchema = new Schema({
 	alternateTitle : {
 		type: String
 	},
-    	inSeason : {
-		type: Boolean	   
+    	seasonStart : {
+		type: Date   
+	},
+    	seasonEnd : {
+		type: Date
 	},
 }, {
     toObject: { virtuals: true },
