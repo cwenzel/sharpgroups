@@ -21,6 +21,8 @@ module.exports = function(app) {
 
 	app.route('/groups/getGroupUsersAndBankrolls/:groupId')
 		.get(users.requiresLogin, groups.getGroupUsersAndBankrolls);
+	app.route('/groups/withBoardItems/:groupId')
+		.get(users.requiresLogin, groups.getGroupWithBoardItems);
 
 	// Finish by binding the group middleware
 	app.param('groupId', groups.groupByID);

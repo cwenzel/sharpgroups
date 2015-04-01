@@ -69,6 +69,13 @@ function repeater(i, groupId, output, callback) {
 	}
 }
 
+exports.getGroupWithBoardItems = function(req, res) { 
+    Group.findById(req.group._id).exec(function(err, group) { 
+        console.log(group);
+        res.json(group);          
+    });
+}; 
+
 exports.getGroupUsersAndBankrolls = function(req, res) {
 
 	Bank.find({'group' : req.group._id}).populate('user', 'displayName').sort('-amount').exec(function (err, banks) {

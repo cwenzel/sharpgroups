@@ -107,6 +107,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 		};
 
 		$scope.groupHasWagersAvailable = function(group) {
+                        return true; 
 			var expireDate = new Date(group.endDate);
 			if (expireDate < new Date())
 				return false;

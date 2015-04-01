@@ -1,8 +1,11 @@
 'use strict';
 
-angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'BoardItems',
-	function($scope, $stateParams, $location, Authentication, BoardItems) {
+angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'BoardItems', 'bitems',
+	function($scope, $stateParams, $location, Authentication, BoardItems, bitems) {
 		$scope.authentication = Authentication;
+                $scope.bitems = bitems;
+                console.log($scope.bitems);  
+//                $scope.loadingMessage.innerText = 'Loading...'; 
 		$scope.create = function() {
 			var boardItem = new BoardItems({
 				amount: this.amount,
