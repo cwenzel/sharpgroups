@@ -176,7 +176,7 @@ exports.getRecent = function(req, res, next){
             }
             if(wager.boardItem.processed){
                 if(wager.boardItem.winner){
-                    tempWager.change = wagerUtils.calcWinnings(tempWager.amount, tempWager.juice).winnings;
+                    tempWager.change = '+' + wagerUtils.calcWinnings(wager.amount, wager.boardItem.juice).pay;
                 }
                 else{
                     tempWager.change = '-' + tempWager.amount;
