@@ -6,12 +6,12 @@ angular.module('boardItems').config(['$stateProvider',
    // boardItems state routing
       $stateProvider.
       state('listBoardItems', {
-	    url: '/boardItems/:groupId',
+         url: '/boardItems/:groupId',
          templateUrl: 'modules/boardItems/views/list-boardItems.client.view.html',
          controller: 'BoardItemsController', 
          resolve: { 
-            bitems: function($stateParams, $http) {
-               return $http.get('/groups/withBoardItems/'+$stateParams.groupId).then(function(data) { return data.data; });
+            bitems: function($stateParams, BoardItems) {
+               return BoardItems.query({'groupId' : $stateParams.groupId}).$promise; 
             }
          }   
       }).

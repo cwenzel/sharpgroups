@@ -14,10 +14,10 @@
 	  </div> 
       </div>
        
-      <div data-ng-repeat="boardItem in boardItems">
+      <div data-ng-repeat="boardItem in bitems">
          <div ng-if="!boardItem.expired">
             <div class="row" ng-if="$index % 2 == 0">
-               <div class="col-md-6 col-xs-12" ng-repeat="boardItem in boardItems.slice($index, $index+2)">
+               <div class="col-md-6 col-xs-12" ng-repeat="boardItem in bitems.slice($index, $index+2)">
                   <div class="panel panel-betboard-item">
                      <div ng-class="getClassForBoardItem(boardItem)" class="panel-heading">
                         <h3 class="panel-title"><span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span><span style="float:right" data-ng-bind="boardItem.eventType.title"></span></h3>
