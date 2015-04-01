@@ -10,7 +10,9 @@ switch (arg) {
 		biScraper.runScript(true);
 		break;
 	case 'score':
-		resultScraper.runScript(true);
+		resultScraper.runScript(true, function() {
+			console.log('Scores inserted');
+		});
 		break;
 	case 'wager':
 		wagerScript.runScript(true);
