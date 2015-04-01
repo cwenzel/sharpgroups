@@ -95,6 +95,20 @@
   box-sizing: border-box;
 }
 
+.bet-name:empty{
+  background-color: black;
+  width: 75%;
+  height: 15px;
+}
+
+.wonBet{
+  color: green;
+}
+
+.lostBet{
+  color: red;
+}
+
 .timeEntered, .messageEntered{
   color: gray;
   font-size: 70%;
@@ -197,6 +211,56 @@
     				</div>
     			</div>
     		</div>
+
+        <div class="page-header">
+          <h1>Recent Bets</h1>
+        </div>
+        <div class="list-group" data-ng-init="getRecentWagers()">
+          <div class="list-group-item" style="display: table; width: 100%">
+
+            <div style="display: table-row; font-weight: bold; width: 100%">
+              <div style="display: table-cell; width: 10%">
+                <p class="list-group-item-text">Gambler</p>
+              </div>
+              <div style="display: table-cell; width: 10%">
+                <p class="list-group-item-text"># of sharps</p>
+              </div>
+              <div style="display: table-cell; width: 10%">
+                <p class="list-group-item-text">Juice</p>
+              </div>
+              <div style="display: table-cell; width: 15%">
+                <p class="list-group-item-text">Date</p>
+              </div>
+              <div style="display: table-cell; width: 40%;">
+                <p class="list-group-item-text">Bet</p>
+              </div>
+              <div style="display: table-cell; width: 10%;">
+                <p class="list-group-item-text">Result</p>
+              </div>
+            </div>
+
+            <div data-ng-repeat="item in recentWagers" style="display: table-row; width: 100%" ng-class="{wonBet: item.winner, lostBet: !item.winner && item.processed}">
+              <div style="display: table-cell; width: 20%">
+                <a class="list-group-item-text" data-ng-bind="item.user" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userId}}/{{item.user}}"></a>
+              </div>
+              <div style="display: table-cell; width: 20%">
+                <p class="list-group-item-text" data-ng-bind="item.amount"></p>
+              </div>
+              <div style="display: table-cell; width: 20%">
+                <p class="list-group-item-text" data-ng-bind="item.juice"></p>
+              </div>
+              <div style="display: table-cell; width: 20%">
+                <p class="list-group-item-text" data-ng-bind="item.created | date:'M/d h:mm a'"></p>
+              </div>
+              <div style="display: table-cell; width: 30%;">
+                <p class="list-group-item-text bet-name" data-ng-bind="item.betName" title={{item.teams}}></p>
+              </div>
+              <div style="display: table-cell; width: 30%;">
+                <p class="list-group-item-text" data-ng-bind="item.change"></p>
+              </div>
+            </div>
+          </div>
+        </div>
 
     		<div class="page-header">
     			<h1>Messages</h1>

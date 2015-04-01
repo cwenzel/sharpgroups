@@ -30,11 +30,47 @@ var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 });
 }
 
+function calcWinnings (amount, juice) {
+	juice = juice.toString();
+	juice = juice.trim();
+	var slashPosition = juice.indexOf('/');
+	var winnings = 0;
+	var conversion = 0;
+
+	if (juice === 'EVEN') {
+		winnings = amount;
+	}
+	else if (slashPosition > 0) {
+		var numerator = juice.split('/')[0];
+		var denominator = juice.split('/')[1];
+		var theOdds = parseFloat(numerator / denominator);
+		winnings = amount * theOdds;
+	}
+	else if (juice[0] === '+') {
+		juice = parseInt(juice);
+		conversion = juice / 100;
+		winnings = conversion * amount;
+	}
+	else {
+		juice = parseInt(juice.substring(1));
+		conversion = 1 / (juice / 100);
+		winnings = conversion * amount;
+	}
+
+	var pay =  amount + winnings;
+	pay = parseFloat(pay).toFixed(2);
+	winnings = parseFloat(winnings).toFixed(2);
+
+	return {'pay' : pay, 'winnings' : winnings};
+}
+
+exports.calcWinnings = calcWinnings;
+
 exports.runScript = function() {
 	Score.find({}).exec(function (err, scores) {
 		handleScoresAndBoardItems(scores);
 	});
-	
+
 	function handleScoresAndBoardItems(scores) {
 		for (var s in scores) {
 			findBoardItemsAndUpdate(scores[s]);
@@ -50,13 +86,13 @@ exports.runScript = function() {
 			});
 		});
 	}
-	
+
 	function updateBoardItemsWithScoreData(boardItems, score, awayTeam, homeTeam) {
 		for (var b in boardItems) {
 			handleBoardItem(boardItems[b], score, awayTeam, homeTeam);
 		}
 	}
-	
+
 	function handleBoardItem(boardItem, score, awayTeam, homeTeam) {
 		var spread = '';
 		var overUnder = '';
@@ -82,14 +118,14 @@ exports.runScript = function() {
 				if (score.homeTeamScore + spread > score.awayTeamScore)
 					boardItem.winner = true;
 				if (score.homeTeamScore + spread === score.awayTeamScore)
-					boardItem.push = true;	
+					boardItem.push = true;
 				break;
 			case 'over' :
 				overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Over:', ''));
 				if (score.awayTeamScore + score.homeTeamScore > overUnder)
 					boardItem.winner = true;
 				if (score.awayTeamScore + score.homeTeamScore === overUnder)
-					boardItem.push = true;	
+					boardItem.push = true;
 				break;
 			case 'under' :
 				overUnder = parseFloat(boardItem.description.replace(awayTeam + '-' + homeTeam + ' Under:', ''));
@@ -110,7 +146,7 @@ exports.runScript = function() {
 				updateWagersForWinningBoardItem(boardItem);
 		});
 	}
-	
+
 	function updateWagersForWinningBoardItem(boardItem) {
 		Wager.find({'boardItem' : boardItem._id}).exec(function (err, wagers) {
 			for (var w in wagers) {
@@ -118,7 +154,7 @@ exports.runScript = function() {
 			}
 		});
 	}
-	
+
 	function updateBankForWinningWager(wager, winnings) {
 		Bank.find({'user' : wager.user, 'group' : wager.group}).exec(function (err, banks) {
 			// this query should only ever return one bank
@@ -126,42 +162,7 @@ exports.runScript = function() {
 			banks[0].save();
 		});
 	}
-	
-	function calcWinnings (amount, juice) {
-		juice = juice.toString();
-		juice = juice.trim();
-		var slashPosition = juice.indexOf('/');
-		var winnings = 0;
-		var conversion = 0;
-	
-		if (juice === 'EVEN') {
-			winnings = amount;
-		}
-		else if (slashPosition > 0) {
-			var numerator = juice.split('/')[0];
-			var denominator = juice.split('/')[1];
-			var theOdds = parseFloat(numerator / denominator);
-			winnings = amount * theOdds;
-		}
-		else if (juice[0] === '+') {
-			juice = parseInt(juice);
-			conversion = juice / 100;
-			winnings = conversion * amount;
-		}
-		else {
-			juice = parseInt(juice.substring(1));
-			conversion = 1 / (juice / 100);
-			winnings = conversion * amount;
-		}
-	
-		var pay =  amount + winnings;
-		pay = parseFloat(pay).toFixed(2);
-		winnings = parseFloat(winnings).toFixed(2);
-	
-		return {'pay' : pay, 'winnings' : winnings};
-	}
-	
-	
+
 	function scoreLineNameConverter(sport, teamName, callback) {
 		Team.find({'sport' : {$in : [sport]}, 'alternateName' : teamName}, function(err, team) {
 			if (team && team.length === 1) {

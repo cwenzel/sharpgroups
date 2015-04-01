@@ -15,6 +15,9 @@ module.exports = function(app) {
 	app.route('/wagers/:wagerId')
 		.get(wagers.read);
 
+    app.route('/wagers/recent/:groupId')
+        .get(wagers.getRecent);
+
 	// Finish by binding the wager middleware
 	app.param('wagerId', wagers.wagerByID);
 };

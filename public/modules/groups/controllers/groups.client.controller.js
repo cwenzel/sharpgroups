@@ -103,7 +103,16 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 				  }).
 				  error(function(data, status, headers, config) {
 				  });
+		};
 
+		$scope.getRecentWagers = function(){
+			var groupId = document.location.href.split('/')[5];
+			$http.get('/wagers/recent/' + groupId).
+				  success(function(data, status, headers, config) {
+				  	$scope.recentWagers = data;
+				  }).
+				  error(function(data, status, headers, config) {
+				  });
 		};
 
 		$scope.groupHasWagersAvailable = function(group) {
@@ -142,7 +151,7 @@ angular.module('groups').controller('GroupsController', ['$scope', '$stateParams
 			if (lastEnteredDate !== enteredDate) {
 				lastEnteredDate = enteredDate;
 				return true;
-			} 
+			}
 			else {
 				lastEnteredDate = enteredDate;
 				return false;
