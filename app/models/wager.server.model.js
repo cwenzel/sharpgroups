@@ -10,10 +10,10 @@ var mongoose = require('mongoose'),
  * Wager Schema
  */
 var WagerSchema = new Schema({
-        boardItem: {
+    boardItem: {
 		type: Schema.ObjectId,
 		ref: 'BoardItem'
-        },
+    },
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
@@ -26,6 +26,9 @@ var WagerSchema = new Schema({
 		type: Number,
 		min: 0.01
 	},
+    created: {
+        type: Date
+    },
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

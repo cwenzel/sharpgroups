@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
+	wagerUtils = require('../scripts/updateWagers'),
 	Wager = mongoose.model('Wager'),
 	Bank = mongoose.model('Bank'),
 	BoardItem = mongoose.model('BoardItem'),
@@ -39,7 +40,7 @@ function getGroup(groupId, callback) {
 
 function findExistingWager(groupId, userId, boardItemId, callback) {
 	Wager.find({'group' : groupId, 'user' : userId, 'boardItem' : boardItemId}, function (err, wager) {
-		callback(wager);	
+		callback(wager);
 	});
 }
 
@@ -49,17 +50,17 @@ function getBoardItems(boardItemIds, callback) {
 	});
 }
 
-
 /**
  * Create a wager
  */
 exports.create = function(req, res) {
 	var wager = new Wager(req.body);
 	wager.user = req.user;
+	wager.created = new Date();
 
 	if (parseFloat(wager.amount) < 0.01)
 		return res.status(400).send({message: 'Wager can not be negative'});
-	
+
 	findExistingWager(wager.group, wager.user, wager.boardItem, function(existingWager) {
 		if (existingWager.length !== 0)
 			return res.status(400).send({message: 'You are not allowed to place the same wager twice'});
@@ -72,7 +73,7 @@ exports.create = function(req, res) {
 			getGroup(wager.group, function (group) {
 				if (wager.amount > group.maxBet)
 					return res.status(400).send({message: 'The max bet is: ' + group.maxBet});
-	
+
 				updateBankroll(wager.group, wager.user, wager.amount, function placeWager(err) {
 					if (err) {
 						return res.status(400).send({
@@ -102,7 +103,6 @@ exports.read = function(req, res) {
 	res.json(req.wager);
 };
 
-
 /**
  * List of wagers
  */
@@ -129,7 +129,6 @@ exports.list = function(req, res) {
  * Wager middleware
  */
 exports.wagerByID = function(req, res, next, id) {
-
 	if (!mongoose.Types.ObjectId.isValid(id)) {
 		return res.status(400).send({
 			message: 'Wager is invalid'
@@ -146,6 +145,47 @@ exports.wagerByID = function(req, res, next, id) {
 		req.wager = wager;
 		next();
 	});
+};
+
+exports.getRecent = function(req, res, next){
+    Wager.find({
+        group: req.params.groupId
+    })
+    .populate('boardItem')
+    .populate('user')
+    .sort({_id: -1})
+    .limit(10)
+    .exec(function (err, wagers) {
+        var returnArray = [],
+            currentTime = new Date();
+        wagers.forEach(function(wager){
+            var tempWager = {
+                _id: wager._id,
+                amount: parseFloat(wager.amount).toFixed(2),
+                juice: wager.boardItem.juice,
+                processed: wager.boardItem.processed,
+                winner: wager.boardItem.winner,
+                created: wager.created || null,
+                user: wager.user.displayName,
+                userID: wager.user._id
+            };
+            //Add event if it's started
+            if(wager.boardItem.eventDate < currentTime){
+                tempWager.betName = wager.boardItem.description;
+                tempWager.teams = wager.boardItem.teams.join(' v ');
+            }
+            if(wager.boardItem.processed){
+                if(wager.boardItem.winner){
+                    tempWager.change = wagerUtils.calcWinnings(tempWager.amount, tempWager.juice).winnings;
+                }
+                else{
+                    tempWager.change = '-' + tempWager.amount;
+                }
+            }
+            returnArray.push(tempWager);
+        });
+        res.json(returnArray);
+    });
 };
 
 /**

@@ -22,10 +22,28 @@ exports.read = function(req, res) {
  */
 exports.list = function(req, res) {
 	EventCollection.findById(req.query.eventId, function (err, ev) {
-		BoardItem.aggregate({$sort : {'eventDate' :1 , 'teams' : 1}} ,{$match : {'sport' : ev.title, 'expired' : false, 'eventDate' : {$gt : new Date()}}}).exec(function (err, boardItems) {
-			res.json(boardItems);
-		});
-	});
+        if(err){
+            return res.status(400).send({message: err});
+        }
+        if(!ev){
+            return res.status(400).send({message: 'Event not found'});
+        }
+        var query = [
+            {$match: {
+                sport: ev.title,
+                expired: false,
+                eventDate: {$gt: new Date()}
+            }},
+                {$sort: {
+                eventDate :1,
+                teams : 1
+            }}
+        ];
+
+        BoardItem.aggregate(query).exec(function (err, boardItems) {
+            res.json(boardItems);
+        });
+    });
 };
 
 /**
