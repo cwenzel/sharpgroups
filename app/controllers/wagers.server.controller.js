@@ -5,7 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
-	wagerUtils = require('../scripts/updateWagers'),
+	ServerBrowserUtils = require('../utils/serverBrowserUtils'),
 	Wager = mongoose.model('Wager'),
 	Bank = mongoose.model('Bank'),
 	BoardItem = mongoose.model('BoardItem'),
@@ -176,7 +176,7 @@ exports.getRecent = function(req, res, next){
             }
             if(wager.boardItem.processed){
                 if(wager.boardItem.winner){
-                    tempWager.change = '+' + wagerUtils.calcWinnings(wager.amount, wager.boardItem.juice).pay;
+ 		    tempWager.change = '+' + ServerBrowserUtils.calcWinnings(wager.amount, wager.boardItem.juice).pay;
                 }
                 else{
                     tempWager.change = '-' + tempWager.amount;

@@ -5,6 +5,7 @@ var BoardItem = require('../models/boardItem.server.model.js');
 var Wager = require('../models/wager.server.model.js');
 var Bank = require('../models/bank.server.model.js');
 var Team = require('../models/team.server.model.js');
+var ServerBrowserUtils = require('../utils/serverBrowserUtils.js');
 
 var mongoose = require('mongoose'),
 	BoardItem = mongoose.model('BoardItem'),
@@ -29,42 +30,6 @@ var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 	}
 });
 }
-
-function calcWinnings (amount, juice) {
-	juice = juice.toString();
-	juice = juice.trim();
-	var slashPosition = juice.indexOf('/');
-	var winnings = 0;
-	var conversion = 0;
-
-	if (juice === 'EVEN') {
-		winnings = amount;
-	}
-	else if (slashPosition > 0) {
-		var numerator = juice.split('/')[0];
-		var denominator = juice.split('/')[1];
-		var theOdds = parseFloat(numerator / denominator);
-		winnings = amount * theOdds;
-	}
-	else if (juice[0] === '+') {
-		juice = parseInt(juice);
-		conversion = juice / 100;
-		winnings = conversion * amount;
-	}
-	else {
-		juice = parseInt(juice.substring(1));
-		conversion = 1 / (juice / 100);
-		winnings = conversion * amount;
-	}
-
-	var pay =  amount + winnings;
-	pay = parseFloat(pay).toFixed(2);
-	winnings = parseFloat(winnings).toFixed(2);
-
-	return {'pay' : pay, 'winnings' : winnings};
-}
-
-exports.calcWinnings = calcWinnings;
 
 exports.runScript = function() {
 	Score.find({}).exec(function (err, scores) {
@@ -150,7 +115,7 @@ exports.runScript = function() {
 	function updateWagersForWinningBoardItem(boardItem) {
 		Wager.find({'boardItem' : boardItem._id}).exec(function (err, wagers) {
 			for (var w in wagers) {
-				updateBankForWinningWager(wagers[w], calcWinnings(wagers[w].amount, boardItem.juice).pay);
+				updateBankForWinningWager(wagers[w], ServerBrowserUtils.calcWinnings(wagers[w].amount, boardItem.juice).pay);
 			}
 		});
 	}
