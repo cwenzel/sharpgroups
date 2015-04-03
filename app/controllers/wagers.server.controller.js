@@ -162,7 +162,6 @@ exports.getRecent = function(req, res, next){
             var tempWager = {
                 _id: wager._id,
                 amount: parseFloat(wager.amount).toFixed(2),
-                juice: wager.boardItem.juice,
                 processed: wager.boardItem.processed,
                 winner: wager.boardItem.winner,
                 created: wager.created || null,
@@ -171,6 +170,7 @@ exports.getRecent = function(req, res, next){
             };
             //Add event if it's started
             if(wager.boardItem.eventDate < currentTime){
+                tempWager.juice = wager.boardItem.juice;
                 tempWager.betName = wager.boardItem.description;
                 tempWager.teams = wager.boardItem.teams.join(' v ');
             }
