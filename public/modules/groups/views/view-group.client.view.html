@@ -241,7 +241,7 @@
 
             <div data-ng-repeat="item in recentWagers" style="display: table-row; width: 100%" ng-class="{wonBet: item.winner, lostBet: !item.winner && item.processed}">
               <div style="display: table-cell; width: 20%">
-                <a class="list-group-item-text" data-ng-bind="item.user" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userId}}/{{item.user}}"></a>
+                <a class="list-group-item-text" data-ng-bind="item.user" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userID}}/{{item.user}}"></a>
               </div>
               <div style="display: table-cell; width: 20%">
                 <p class="list-group-item-text" data-ng-bind="item.amount"></p>
