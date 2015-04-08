@@ -1,11 +1,27 @@
 'use strict';
 
-angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'BoardItems', 'bitems',
-	function($scope, $stateParams, $location, Authentication, BoardItems, bitems) {
+angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'BoardItems',
+	function($scope, $stateParams, $location, $http, Authentication, BoardItems) {
 		$scope.authentication = Authentication;
-                $scope.bitems = bitems;
-                console.log($scope.bitems);  
-//                $scope.loadingMessage.innerText = 'Loading...'; 
+                $scope.bitemsLoading = true;
+                $scope.dates = [];  
+                BoardItems.query({'groupId' : $stateParams.groupId}).$promise
+                   .then(function(data) {
+                      var local = []; 
+                      data.forEach(function(element) {
+                          var eventDate = new Date(element.eventDate);
+                          var d = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate()); 
+                          var ds = d.toString(); 
+                          if (local.indexOf(ds) === -1) { 
+                              $scope.dates.push(d); 
+                              local.push(ds); 
+                          } 
+                      }); 
+                      $scope.bitems = data; 
+                   }). 
+                   finally(function() { 
+                      $scope.bitemsLoading = false; 
+                   });                     
 		$scope.create = function() {
 			var boardItem = new BoardItems({
 				amount: this.amount,
@@ -30,18 +46,36 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 				boardItemId: $stateParams.boardItemId
 			});
 		};
-		var currentTeams = [];
-		var currentColor = 'color-one';
-		$scope.getClassForBoardItem = function(boardItem) {
-			var switchColors = false;
-			if (boardItem.teams[0] !== currentTeams[0] && currentTeams.length > 0)
-				switchColors = true;
-
-			currentTeams = boardItem.teams;
-			if (switchColors) {
-				currentColor = (currentColor === 'color-one') ? 'color-two' : 'color-one';
-			}
-			return currentColor;
-		};
 	}
-]);
+]); 
+
+angular.module('sg.switch.colors').controller('SwitchColors', function($scope, colorService) { 
+     this.setColor = function(bi, element) {
+         element.addClass(colorService.getClass(bi.teams[0])); 
+         colorService.setCurrentTeam(bi.teams[0]); 
+     }; 
+}).
+service('colorService', function() { 
+    var currentTeam = null, currentClass = 'color-one'; 
+    this.setCurrentTeam = function(team) { 
+        this.currentTeam = team; 
+    };
+    this.getClass = function(team) { 
+        if (team !== this.currentTeam) { 
+           this.currentClass = (this.currentClass === 'color-one') ? 'color-two' : 'color-one';
+        }
+        return this.currentClass; 
+    }; 
+    this.getCurrentTeam = function() { 
+        return this.currentTeam; 
+    };  
+}). 
+directive('sgSwitchColors', function() { 
+    return { 
+       restrict: 'C', 
+       controller: 'SwitchColors',
+       link: function(scope, element, attrs, scCtrl) { 
+          scCtrl.setColor(scope.boardItem, element); 
+       }
+    }; 
+}); 

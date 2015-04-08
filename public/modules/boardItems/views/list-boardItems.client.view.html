@@ -1,5 +1,4 @@
 <section>
-   <p id="loadingMessage">Loading...</p>
    <div>
       <div class="panel panel-betboard">
          <div class="panel-heading">
@@ -7,19 +6,30 @@
             <h4 class="panel-secondary-title">BETS FOR THE <span data-ng-bind="group.title"></span> GROUP</h4>
           </div> 
 	  <div class="panel-body"> 	  
-	    Sorting By: 	  
+	    Event Type: 	  
             <select><!-- data-ng-model="group.events" ng-options="ev.title for ev in group.events" --> <!-- we will want to do something like this, but group.events is not populated -->
 	      <option label="All">All</option>
 	    </select>
+            Event Date
+<div class="container"> 
+  <div class="row">
+    <div class="col-md-3">ALL</div> 
+    <div class="col-md-3" ng-repeat="d in dates">
+      <div>{{d | date: 'MMM'}}</div>
+      <div>{{d | date: 'dd'}}</div>
+    </div> 
+  </div>
+</div> 
 	  </div> 
       </div>
-       
+      <img src="/modules/boardItems/img/ajax-loader.gif" ng-show="bitemsLoading">
       <div data-ng-repeat="boardItem in bitems">
          <div ng-if="!boardItem.expired">
-            <div class="row" ng-if="$index % 2 == 0">
-               <div class="col-md-6 col-xs-12" ng-repeat="boardItem in bitems.slice($index, $index+2)">
+            <div class="sg-switch-colors" class="row">
+            <!--div class="row" ng-if="$index % 2 == 0"-->
+               <!--div class="col-md-6 col-xs-12" ng-repeat="boardItem in bitems.slice($index, $index+2)"-->
                   <div class="panel panel-betboard-item">
-                     <div ng-class="getClassForBoardItem(boardItem)" class="panel-heading">
+                     <div class="panel-heading">
                         <h3 class="panel-title"><span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span><span style="float:right" data-ng-bind="boardItem.eventType.title"></span></h3>
                      </div>
                      <div class="panel-body" ng-class="getClassForBoardItem(boardItem)">  
@@ -40,23 +50,8 @@
 </form>
                      </div> 
                   </div> 
-               </div> 
+               <!--/div--> 
             </div>
-            <!--div ng-class="getClassForBoardItem(boardItem)" class="list-group-item">
-                        <a style="padding:0px; border:0px" data-ng-href="#!/boardItem/{{boardItem._id}}/{{group._id}}" class="sub-anchor list-group-item">
-                           <small class="list-group-item-text">
-                              <span data-ng-bind="boardItem.sport"></span>
-                              on
-                              <span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
-                           </small>
-                           <h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
-                           <p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
-                        </a>	
-                     </div>
-                     <div style="text-align: right; display:table-cell; vertical-align: middle">	
-                        <a class="btn btn-primary btn-lg " data-ng-href="#!/wagers/create/{{boardItem._id}}/{{group._id}}">Place Wager</a>
-                     </div>
-            </div-->
          </div>
       </div>
    </div>
