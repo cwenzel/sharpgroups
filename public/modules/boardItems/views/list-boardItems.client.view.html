@@ -1,61 +1,72 @@
-<section>
-   <div>
+<section class="board-items">
+  <div class="container">
+    <div class="row"> 
       <div class="panel panel-betboard">
-         <div class="panel-heading">
-            <h3 class="panel-title">BET BOARD</h3>
-            <h4 class="panel-secondary-title">BETS FOR THE <span data-ng-bind="group.title"></span> GROUP</h4>
+        <div class="panel-heading">
+          <h3 class="panel-title">BET BOARD</h3>
+          <h4 class="panel-secondary-title">BETS FOR THE <span data-ng-bind="group.title"></span> GROUP</h4>
+        </div> 
+        <div class="panel-body"> 	  
+          Event Type: 	  
+          <select><!-- data-ng-model="group.events" ng-options="ev.title for ev in group.events" --> <!-- we will want to do something like this, but group.events is not populated -->
+            <option label="All">All</option>
+	  </select>
+          Event Date
+          <div class="container"> 
+            <div class="row">
+              <div class="col-md-3">ALL</div> 
+              <div class="col-md-3" ng-repeat="d in dates">
+                <div>{{d | date: 'MMM'}}</div>
+                <div>{{d | date: 'dd'}}</div>
+              </div> 
+            </div>
           </div> 
-	  <div class="panel-body"> 	  
-	    Event Type: 	  
-            <select><!-- data-ng-model="group.events" ng-options="ev.title for ev in group.events" --> <!-- we will want to do something like this, but group.events is not populated -->
-	      <option label="All">All</option>
-	    </select>
-            Event Date
-<div class="container"> 
-  <div class="row">
-    <div class="col-md-3">ALL</div> 
-    <div class="col-md-3" ng-repeat="d in dates">
-      <div>{{d | date: 'MMM'}}</div>
-      <div>{{d | date: 'dd'}}</div>
-    </div> 
-  </div>
-</div> 
-	  </div> 
+        </div> 
       </div>
-      <img src="/modules/boardItems/img/ajax-loader.gif" ng-show="bitemsLoading">
-      <div data-ng-repeat="boardItem in bitems">
-         <div ng-if="!boardItem.expired">
-            <div class="sg-switch-colors" class="row">
-            <!--div class="row" ng-if="$index % 2 == 0"-->
-               <!--div class="col-md-6 col-xs-12" ng-repeat="boardItem in bitems.slice($index, $index+2)"-->
-                  <div class="panel panel-betboard-item">
-                     <div class="panel-heading">
-                        <h3 class="panel-title"><span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span><span style="float:right" data-ng-bind="boardItem.eventType.title"></span></h3>
-                     </div>
-                     <div class="panel-body" ng-class="getClassForBoardItem(boardItem)">  
-                        <h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
-                        <p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
-                        <hr> 
-                        <a ng-hide="showwager" ng-click="showwager=true" style="cursor:pointer">Start Wager Process</a> 
-                        <a ng-show="showwager" ng-click="showwager=false" style="cursor:pointer">Cancel Wager Process</a> 
-<form ng-show="showwager" class="form-inline">
-                          <div ng-show="showwager" class="form-group">
-    <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
-    <div class="input-group">
-      <div class="input-group-addon"><b>S</b></div>
-      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
+    </div> 
+  </div> 
+  <div class="container"> 
+    <img src="/modules/boardItems/img/ajax-loader.gif" ng-show="bitemsLoading">
+    <div data-ng-repeat="boardItem in bitems">
+      <div ng-if="!boardItem.expired">
+        <div class="row">
+          <div class="panel panel-betboard-item">
+            <div class="sg-switch-colors panel-heading clearfix">
+              <h3 class="panel-title">
+                <span data-ng-bind="boardItem.eventDate | date:'mediumDate'"></span>
+                <div class="pull-right">
+                  <img src="/modules/boardItems/img/nba-logo.png" style="height:22px; width:14px">
+                  <span data-ng-bind="boardItem.eventType.title"></span>
+                </div>
+              </h3>
+            </div>
+            <div class="panel-body">  
+              <h4 class="list-group-item-heading description" data-ng-bind="boardItem.description"></h4>
+              <p class="list-group-item-text" data-ng-bind="boardItem.juice"></p>
+              <div class="make-bet-group"> 
+              <span>Start Wager Process</span>
+              <div class="clearfix expander"> 
+              <a class="" ng-hide="showwager" ng-click="showwager=true" style="cursor:pointer"><span class="glyphicon glyphicon-plus-sign"></span></a> 
+              <a class="" ng-show="showwager" ng-click="showwager=false" style="cursor:pointer"><span class="glyphicon glyphicon-minus-sign"></span></a> 
+              </div> 
+              </div> 
+              <form ng-show="showwager" class="form-inline">
+                <div ng-show="showwager" class="form-group">
+                  <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+                  <div class="input-group">
+                    <div class="input-group-addon"><b>S</b></div>
+                    <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-default">Make Wager</button>
+              </form>
+            </div> 
+          </div>
+        </div>
+      </div> 
     </div>
   </div>
-  <button type="submit" class="btn btn-default">Make Wager</button>
-</form>
-                     </div> 
-                  </div> 
-               <!--/div--> 
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="alert alert-warning text-center" data-ng-if="boardItems.$resolved && !boardItems.length">
-      Sorry, there is no board for the time frame of your group.
-   </div>
+  <div class="alert alert-warning text-center" data-ng-if="boardItems.$resolved && !boardItems.length">
+    Sorry, there is no board for the time frame of your group.
+  </div>
 </section>

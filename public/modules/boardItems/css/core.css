@@ -20,44 +20,38 @@
    width: 100%;
 }
 .color-one {
-   color: rgb(115, 243, 83);
+   color: #000;  
 }
 .color-two {
-   color: rgb(245, 51, 59);
+   background-color: rgb(244, 235, 231);
 }
 .sub-anchor {
    background-color: inherit;
 }
-.ui-resolving { 
-   background-color: black;
+body { 
+   background: #eee; 
 }
-.spinner {
-  width: 30px;
-  height: 30px;
-  background-color: #333;
-
-  margin: 100px auto;
-  -webkit-animation: rotateplane 1.2s infinite ease-in-out;
-  animation: rotateplane 1.2s infinite ease-in-out;
+.panel-betboard-item { 
+   border-radius:0px; 
 }
-
-@-webkit-keyframes rotateplane {
-  0% { -webkit-transform: perspective(120px) }
-  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+.panel-betboard-item .panel-heading { 
+   border-radius:0px;
+   border-bottom: 1px solid rgb(240, 195, 195) 
 }
-
-@keyframes rotateplane {
-  0% { 
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
-  } 50% { 
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
-  } 100% { 
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-  }
+.make-bet-group { 
+  border-top: 1px solid rgb(240,195,195);
+  margin-top: 15px;
+  font-size: 10px; 
+  color: #36c; 
+}
+.make-bet-group>span { 
+  font-size: 10px; 
+}
+.make-bet-group .expander { 
+   margin: 5px 32px 0px; 
+}
+.make-bet-group .expander>a { 
+  font-size: 16px;
 }
 @media (min-width: @screen-sm-min) {
 
