@@ -18,6 +18,9 @@
 .header-text{
     float: left;
 }
+.page-header{
+  margin: 20px 0 5px;
+}
 
 .edit-buttons{
     padding: 15px 10px;
@@ -101,12 +104,94 @@
   height: 15px;
 }
 
-.wonBet{
+.data-table{
+  width: 100%;
+}
+
+.data-table tr:nth-of-type(odd){
+  background: #eee;
+}
+
+.data-table th, td{
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.data-table th{
+  background: #333;
+  color: white;
+  font-weight: bold;
+}
+
+.data-table .wonBet{
   color: green;
 }
 
-.lostBet{
+.data-table .lostBet{
   color: red;
+}
+
+/*Mobile styling for data tables */
+@media only screen and (max-width: 650px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  /* Force table to not be like tables anymore */
+  .recent-bets table,
+  .recent-bets thead,
+  .recent-bets tbody,
+  .recent-bets th,
+  .recent-bets td,
+  .recent-bets tr {
+    display: block;
+  }
+
+  .recent-bets th,
+  .recent-bets td{
+    padding: 2px;
+  }
+
+  .recent-bets td:empty{
+    height: 25px;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  .recent-bets thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .recent-bets tr { border: 1px solid #ccc; }
+
+  .recent-bets td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  .recent-bets td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  /*
+  Label the data
+  */
+  .recent-bets td:nth-of-type(1):before { content: "Gambler"; }
+  .recent-bets td:nth-of-type(2):before { content: "# of Sharps"; }
+  .recent-bets td:nth-of-type(3):before { content: "Juice"; }
+  .recent-bets td:nth-of-type(4):before { content: "Date"; }
+  .recent-bets td:nth-of-type(5):before { content: "Bet"; }
+  .recent-bets td:nth-of-type(6):before { content: "Result"; }
 }
 
 .timeEntered, .messageEntered{
@@ -178,88 +263,52 @@
     			<h1>Leaderboard</h1>
     		</div>
     		<div class="list-group" data-ng-init="getGroupUsersAndBankrolls()">
-    			<div class="list-group-item" style="display: table; width: 100%">
-
-    				<div style="display: table-row; font-weight: bold; width: 100%">
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text">Gambler</p>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text"># of sharps</p>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text">Sharps in waiting</p>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text">Percentage of pot</p>
-    					</div>
-    				</div>
-
-    				<div data-ng-repeat="item in items" style="display: table-row; width: 100%">
-    					<div style="display: table-cell; width: 25%">
-    						<a class="list-group-item-text" data-ng-bind="item.displayName" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userId}}/{{item.displayName}}"></a>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text" data-ng-bind="item.amount"></p>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text" data-ng-bind="item.moneyInFlight"></p>
-    					</div>
-    					<div style="display: table-cell; width: 25%">
-    						<p class="list-group-item-text" data-ng-bind="item.percentage"></p>
-    					</div>
-    				</div>
-    			</div>
+          <table class="data-table leaderboard">
+            <thead>
+              <tr>
+                <th>Gambler</th>
+                <th># of sharps</th>
+                <th>Sharps in Waiting</th>
+                <th>Precentage of Pot</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="item in items">
+                <td><a data-ng-bind="item.displayName" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userID}}/{{item.displayName}}"></a></td>
+                <td data-ng-bind="item.amount"></td>
+                <td data-ng-bind="item.moneyInFlight"></td>
+                <td data-ng-bind="item.percentage"></td>
+              </tr>
+            </tbody>
+          </table>
     		</div>
 
         <div class="page-header">
           <h1>Recent Bets</h1>
         </div>
         <div class="list-group" data-ng-init="getRecentWagers()">
-          <div class="list-group-item" style="display: table; width: 100%">
-
-            <div style="display: table-row; font-weight: bold; width: 100%">
-              <div style="display: table-cell; width: 10%">
-                <p class="list-group-item-text">Gambler</p>
-              </div>
-              <div style="display: table-cell; width: 10%">
-                <p class="list-group-item-text"># of sharps</p>
-              </div>
-              <div style="display: table-cell; width: 10%">
-                <p class="list-group-item-text">Juice</p>
-              </div>
-              <div style="display: table-cell; width: 15%">
-                <p class="list-group-item-text">Date</p>
-              </div>
-              <div style="display: table-cell; width: 40%;">
-                <p class="list-group-item-text">Bet</p>
-              </div>
-              <div style="display: table-cell; width: 10%;">
-                <p class="list-group-item-text">Result</p>
-              </div>
-            </div>
-
-            <div data-ng-repeat="item in recentWagers" style="display: table-row; width: 100%" ng-class="{wonBet: item.winner, lostBet: !item.winner && item.processed}">
-              <div style="display: table-cell; width: 20%">
-                <a class="list-group-item-text" data-ng-bind="item.user" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userID}}/{{item.user}}"></a>
-              </div>
-              <div style="display: table-cell; width: 20%">
-                <p class="list-group-item-text" data-ng-bind="item.amount"></p>
-              </div>
-              <div style="display: table-cell; width: 20%">
-                <p class="list-group-item-text" data-ng-bind="item.juice"></p>
-              </div>
-              <div style="display: table-cell; width: 20%">
-                <p class="list-group-item-text" data-ng-bind="item.created | date:'M/d h:mm a'"></p>
-              </div>
-              <div style="display: table-cell; width: 30%;">
-                <p class="list-group-item-text bet-name" data-ng-bind="item.betName" title={{item.teams}}></p>
-              </div>
-              <div style="display: table-cell; width: 30%;">
-                <p class="list-group-item-text" data-ng-bind="item.change"></p>
-              </div>
-            </div>
-          </div>
+          <table class="data-table recent-bets">
+            <thead>
+              <tr>
+                <th>Gambler</th>
+                <th># of sharps</th>
+                <th>Juice</th>
+                <th>Date</th>
+                <th>Bet</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="item in recentWagers" ng-class="{wonBet: item.winner, lostBet: !item.winner && item.processed}">
+                <td><a data-ng-bind="item.user" href="/#!/wagers/leaderboard/{{group._id}}/{{item.userID}}/{{item.user}}"></a></td>
+                <td data-ng-bind="item.amount"></td>
+                <td data-ng-bind="item.juice"></td>
+                <td data-ng-bind="item.created | date:'M/d h:mm a'"></td>
+                <td data-ng-bind="item.betName" title={{item.teams}}></td>
+                <td data-ng-bind="item.change"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
     		<div class="page-header">
