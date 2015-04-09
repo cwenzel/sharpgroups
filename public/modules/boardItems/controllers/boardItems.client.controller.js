@@ -1,34 +1,59 @@
 'use strict';
 
-angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'BoardItems',
-	function($scope, $stateParams, $location, $http, Authentication, BoardItems) {
+angular.module('boardItems').controller('BoardItemsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'BoardItems', 'boardItemsProvider', 'Groups',  
+	function($scope, $stateParams, $location, $http, Authentication, BoardItems, boardItemsProvider, Groups) {
+                var monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 		$scope.authentication = Authentication;
+
+                $scope.eventTypeSelected = ''; 
+                $scope.eventTypeFilterSelectedIndex = 0; 
+                $scope.eventTypes = [{'id' : 0, 'type' : 'ALL' }];  
+                Groups.get({ groupId: $stateParams.groupId }).$promise
+                    .then(function(data) { 
+                       $scope.group = data;
+                       var i = 1; 
+                       var events = data.events; 
+                       events.forEach(function(element) { 
+                          $scope.eventTypes.push({'id' : i++, 'type' : element.title }); 
+                       }); 
+                    }); 
+                $scope.dates = [{ 'id' : 0, 'month' : 'ALL', 'day' : '', 'date' : null}];
                 $scope.bitemsLoading = true;
-                $scope.dates = [];  
-                BoardItems.query({'groupId' : $stateParams.groupId}).$promise
+                $scope.dateSelected = ''; 
+                $scope.dateFilterSelected = 0;  
+                boardItemsProvider.getBoardItems($stateParams.groupId) 
                    .then(function(data) {
                       var local = []; 
                       data.forEach(function(element) {
                           var eventDate = new Date(element.eventDate);
+                          var i = 1; 
                           var d = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate()); 
                           var ds = d.toString(); 
                           if (local.indexOf(ds) === -1) { 
-                              $scope.dates.push(d); 
+                              $scope.dates.push({ 'id' : i++, 'month' : monthNames[d.getMonth()], 'day' : d.getDate(), 'date' : d}); 
                               local.push(ds); 
                           } 
+                          element.timeStamp = d.getTime();
                       }); 
-                      $scope.bitems = data; 
+                      $scope.bitems = data;
                    }). 
                    finally(function() { 
                       $scope.bitemsLoading = false; 
-                   });                     
+                   });                    
+                $scope.filterByDate = function(index, d) {
+                   $scope.dateFilterSelected = index; 
+                   $scope.dateSelected = d ? d.getTime() : '';
+                };  
+                $scope.filterByEventType = function(index, type) {
+                   $scope.eventTypeFilterSelectedIndex = index; 
+                   $scope.eventTypeSelected = type !== 'ALL' ? type : '';
+                };  
 		$scope.create = function() {
 			var boardItem = new BoardItems({
 				amount: this.amount,
 			});
 			boardItem.$save(function(response) {
 				$location.path('boardItems/' + response._id);
-
 				$scope.amount = 0;
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
@@ -47,8 +72,21 @@ angular.module('boardItems').controller('BoardItemsController', ['$scope', '$sta
 			});
 		};
 	}
-]); 
+]).
+service('boardItemsProvider', function($q, BoardItems) { 
+   var bitems; 
 
+   this.getBoardItems = function(groupId) { 
+       if (angular.isDefined(bitems)) 
+          return $q.when(bitems); 
+
+       return BoardItems.query({'groupId' : groupId}).$promise; 
+   };
+});
+
+
+//angular.module('sg.
+ 
 angular.module('sg.switch.colors').controller('SwitchColors', function($scope, colorService) { 
      this.setColor = function(bi, element) {
          element.addClass(colorService.getClass(bi.teams[0])); 

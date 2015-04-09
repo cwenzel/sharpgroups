@@ -3,21 +3,29 @@
     <div class="row"> 
       <div class="panel panel-betboard">
         <div class="panel-heading">
-          <h3 class="panel-title">BET BOARD</h3>
-          <h4 class="panel-secondary-title">BETS FOR THE <span data-ng-bind="group.title"></span> GROUP</h4>
+          <h4 class="panel-secondary-title">Bet Board for the  <span data-ng-bind="group.title"></span> group</h4>
         </div> 
         <div class="panel-body"> 	  
           Event Type: 	  
-          <select><!-- data-ng-model="group.events" ng-options="ev.title for ev in group.events" --> <!-- we will want to do something like this, but group.events is not populated -->
-            <option label="All">All</option>
-	  </select>
-          Event Date
-          <div class="container"> 
+          <div class="date-filter container-fluid"> 
             <div class="row">
-              <div class="col-md-3">ALL</div> 
-              <div class="col-md-3" ng-repeat="d in dates">
-                <div>{{d | date: 'MMM'}}</div>
-                <div>{{d | date: 'dd'}}</div>
+              <div class="col-md-1" ng-repeat="e in eventTypes">
+                <a ng-click="filterByEventType($index, e.type)" ng-class="{sel: $index == eventTypeFilterSelectedIndex}"> 
+                  <div>{{e.type}}</div>
+                  <div>{{d.day}}</div>
+                </a>
+              </div> 
+            </div>
+          </div>
+          <br />  
+          Event Date
+          <div class="date-filter container-fluid"> 
+            <div class="row">
+              <div class="col-md-1" ng-repeat="d in dates">
+                <a ng-click="filterByDate($index, d.date)" ng-class="{sel: $index == dateFilterSelected}"> 
+                  <div>{{d.month}}</div>
+                  <div>{{d.day}}</div>
+                </a>
               </div> 
             </div>
           </div> 
@@ -27,7 +35,7 @@
   </div> 
   <div class="container"> 
     <img src="/modules/boardItems/img/ajax-loader.gif" ng-show="bitemsLoading">
-    <div data-ng-repeat="boardItem in bitems">
+    <div data-ng-repeat="boardItem in bitems | filter:dateSelected | filter:eventTypeSelected">
       <div ng-if="!boardItem.expired">
         <div class="row">
           <div class="panel panel-betboard-item">

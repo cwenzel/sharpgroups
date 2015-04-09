@@ -53,6 +53,17 @@ body {
 .make-bet-group .expander>a { 
   font-size: 16px;
 }
+.date-filter .sel { 
+  color : #c00; 
+}
+.date-filter a { 
+  cursor: pointer;
+  display: block;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none; 
+}
+
 @media (min-width: @screen-sm-min) {
 
 } 

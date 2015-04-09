@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Group = mongoose.model('Group'),
 	Bank = mongoose.model('Bank'),
+    	EventCollection = mongoose.model('Event'),
 	User = mongoose.model('User'),
 	Wager = mongoose.model('Wager'),
 	BoardItem = mongoose.model('BoardItem'),
@@ -177,7 +178,7 @@ exports.groupByID = function(req, res, next, id) {
 		});
 	}
 
-	Group.findById(id).populate('commissioner', 'displayName').exec(function(err, group) {
+	Group.findById(id).populate('commissioner displayName events').exec(function(err, group) {
 		if (err) return next(err);
 		if (!group) {
 			return res.status(404).send({
