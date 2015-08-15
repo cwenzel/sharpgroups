@@ -114,17 +114,31 @@ exports.runScript = function() {
 
 	function updateWagersForWinningBoardItem(boardItem) {
 		Wager.find({'boardItem' : boardItem._id}).exec(function (err, wagers) {
-			for (var w in wagers) {
-				updateBankForWinningWager(wagers[w], ServerBrowserUtils.calcWinnings(wagers[w].amount, boardItem.juice).pay);
-			}
+				wagerUpdater(wagers, boardItem, 0, function() {
+	
+				});
 		});
 	}
 
-	function updateBankForWinningWager(wager, winnings) {
+	function wagerUpdater(wagers, boardItem, count, callback) {
+		if (count < wagers.length) {
+			console.log('calling update bank');
+			updateBankForWinningWager(wagers[count], ServerBrowserUtils.calcWinnings(wagers[count].amount, boardItem.juice).pay, function() {
+				wagerUpdater(wagers, boardItem, count+1, callback);
+			});
+		}
+		else {
+			callback();
+		}
+	}
+
+	function updateBankForWinningWager(wager, winnings, callback) {
 		Bank.find({'user' : wager.user, 'group' : wager.group}).exec(function (err, banks) {
 			// this query should only ever return one bank
 			banks[0].amount = parseFloat(winnings) + parseFloat(banks[0].amount);
-			banks[0].save();
+			banks[0].save(function(err, bank) {
+				callback();
+			});
 		});
 	}
 
